@@ -29,6 +29,8 @@ describe ComputerPlayer do
 		computer.move.should == 9
 		board.stub(tiles: "X---OX-XO", move_count: 5) #hopeful
 		[3,7].should include(computer.move)
+		board.stub(tiles: "---------", move_count: 0) #center
+		computer.move.should == 5
 	end
 
 	it "should make strategic moves" do
