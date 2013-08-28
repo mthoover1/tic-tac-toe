@@ -3,6 +3,10 @@ class Interface
 		"\e[H\e[2J\n"
 	end
 
+	def instructions
+		"123\n456 <-- Tile Numbers\n789\n\n"
+	end
+
 	def prompt_human
 		"Enter your next move:"
 	end

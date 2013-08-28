@@ -7,6 +7,10 @@ describe Interface do
     interface.clear_screen.should == "\e[H\e[2J\n"
   end
 
+  it "should print instructions to the screen" do
+    interface.instructions.should == "123\n456 <-- Tile Numbers\n789\n\n"
+  end
+
   it "should prompt human for next move" do
     interface.prompt_human.should == "Enter your next move:"
   end

@@ -1,19 +1,19 @@
 class GameController
+	attr_accessor :next_move  # for computer next move test
+
 	def initialize(board, interface, computer)
 		@board = board
 		@interface = interface
 		@computer = computer
+		@next_move = coin_toss
 	end
 
 	def play
-		computer_move(0.0) if coin_toss == "C"
 		show_board
 
 		until @board.won? || @board.tied?
-			human_move
-			show_board
-			break if @board.won? || @board.tied?
-			computer_move(0.5)
+			move
+			update_next_move
 			show_board
 		end
 
@@ -26,7 +26,13 @@ class GameController
 
 	def show_board
 		puts @interface.clear_screen
+		puts @interface.instructions
 		puts @board
+	end
+
+	def move
+		human_move if @next_move == "H"
+		computer_move if @next_move == "C"
 	end
 
 	def human_move
@@ -38,8 +44,16 @@ class GameController
 		@board.update(move, "X")
 	end
 
-	def computer_move(sleep_time)
-		sleep(sleep_time)
+	def computer_move
+		sleep(0.5) if @board.move_count > 0
 		@board.update(@computer.move, "O")
+	end
+
+	def update_next_move
+		if @next_move == "C"
+			@next_move = "H"
+		elsif @next_move == "H"
+			@next_move = "C"
+		end
 	end
 end

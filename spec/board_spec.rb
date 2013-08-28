@@ -43,10 +43,27 @@ describe Board do
 	it "should know when there is a winner" do
 		board.stub(tiles: "OXO-X--X-")
 		board.won?.should == true
+		board.stub(tiles: "OX--X-OX-")
+		board.won?.should == true
+	end
+
+	it "should know when there is not a winner" do
+		board.stub(tiles: "-X----OXO")
+		board.won?.should == false
 	end
 
 	it "should know when the game is a tie" do
 		board.stub(tiles: "XOXOXOOXO")
 		board.tied?.should == true
+		board.stub(tiles: "OXOXOXXOX")
+		board.tied?.should == true
+	end
+
+	it "should know when a game is not a tie" do
+		board.stub(tiles: "XOOXOXXXO")
+		board.tied?.should == false
 	end
 end
+
+
+
