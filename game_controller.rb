@@ -6,16 +6,22 @@ class GameController
 	end
 
 	def play
-		@board.update(5, "O")  # ------- MAKE THIS RANDOM ------ #
+		computer_move(0.0) if coin_toss == "C"
 		show_board
+
 		until @board.won? || @board.tied?
 			human_move
 			show_board
 			break if @board.won? || @board.tied?
-			computer_move
+			computer_move(0.5)
 			show_board
 		end
+
 		puts @interface.display_results(@board)
+	end
+
+	def coin_toss
+		["H","C"].sample
 	end
 
 	def show_board
@@ -32,8 +38,8 @@ class GameController
 		@board.update(move, "X")
 	end
 
-	def computer_move
-		sleep(0.5)
+	def computer_move(sleep_time)
+		sleep(sleep_time)
 		@board.update(@computer.move, "O")
 	end
 end

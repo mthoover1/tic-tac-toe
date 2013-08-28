@@ -2,7 +2,6 @@ require './computer_player'
 require './board'
 
 describe ComputerPlayer do
-	# let(:board) { double("board", tiles: '---------') }
 	let(:board) { Board.new }
 	let(:computer) { ComputerPlayer.new(board) }
 
@@ -32,7 +31,7 @@ describe ComputerPlayer do
 		[3,7].should include(computer.move)
 	end
 
-	it "should test the strategic moves" do
+	it "should make strategic moves" do
 		board.stub(tiles: "----X----", move_count: 1)
 		computer.strategic_move.should == 1
 
@@ -61,5 +60,10 @@ describe ComputerPlayer do
 	it "should make a hopeful move that requires a block" do
 		board.stub(tiles: "--XXO-OX-")
 		[1,9].should include(computer.hopeful_move)
+	end
+
+	it "should take the center if it is open" do
+		board.stub(tiles: "---------")
+		computer.center_move.should == 5
 	end
 end

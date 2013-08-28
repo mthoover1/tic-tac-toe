@@ -19,6 +19,7 @@ class ComputerPlayer
 		try_to_block ||
 		strategic_move ||
 		hopeful_move ||
+		center_move ||
 		random_move
 	end
 
@@ -115,6 +116,10 @@ class ComputerPlayer
 			end
 		end
 		nil
+	end
+
+	def center_move
+		return 5 if @board.tile_open?(5)
 	end
 
 	def random_move
