@@ -24,25 +24,21 @@ class ComputerPlayer
 	end
 
 	def try_to_win
-		WINNING_POSSIBILITIES.each do |combo|
-			if @board.tiles[combo[0]] == "O" && @board.tiles[combo[1]] == "O" && @board.tiles[combo[2]] == "-"
-				return combo[2] + 1
-			elsif @board.tiles[combo[0]] == "O" && @board.tiles[combo[1]] == "-" && @board.tiles[combo[2]] == "O"
-				return combo[1] + 1
-			elsif @board.tiles[combo[0]] == "-" && @board.tiles[combo[1]] == "O" && @board.tiles[combo[2]] == "O"
-				return combo[0] + 1
-			end
-		end
-		nil
+		look_for_opening("O")
 	end
 
 	def try_to_block
+		look_for_opening("X")
+	end
+
+	def look_for_opening(letter)
 		WINNING_POSSIBILITIES.each do |combo|
-			if @board.tiles[combo[0]] == "X" && @board.tiles[combo[1]] == "X" && @board.tiles[combo[2]] == "-"
+			combo = combo.shuffle
+			if @board.tiles[combo[0]] == letter && @board.tiles[combo[1]] == letter && @board.tiles[combo[2]] == "-"
 				return combo[2] + 1
-			elsif @board.tiles[combo[0]] == "X" && @board.tiles[combo[1]] == "-" && @board.tiles[combo[2]] == "X"
+			elsif @board.tiles[combo[0]] == letter && @board.tiles[combo[1]] == "-" && @board.tiles[combo[2]] == letter
 				return combo[1] + 1
-			elsif @board.tiles[combo[0]] == "-" && @board.tiles[combo[1]] == "X" && @board.tiles[combo[2]] == "X"
+			elsif @board.tiles[combo[0]] == "-" && @board.tiles[combo[1]] == letter && @board.tiles[combo[2]] == letter
 				return combo[0] + 1
 			end
 		end
@@ -61,6 +57,22 @@ class ComputerPlayer
 				return [3,7].sample
 			elsif (tiles[0] == "X" && tiles[8] == "X") || (tiles[2] == "X" && tiles[6] == "X")
 				return EDGES.sample + 1
+			elsif tiles[3] == "X" && tiles[2] == "X" # HUMAN PLAYS EDGE AND A FAR CORNER (computer plays corner in between)
+				return 1
+			elsif tiles[3] == "X" && tiles[8] == "X"
+				return 7
+			elsif tiles[1] == "X" && tiles[6] == "X"
+				return 1
+			elsif tiles[1] == "X" && tiles[8] == "X"
+				return 3
+			elsif tiles[5] == "X" && tiles[0] == "X"
+				return 3
+			elsif tiles[5] == "X" && tiles[6] == "X"
+				return 9
+			elsif tiles[7] == "X" && tiles[0] == "X"
+				return 7
+			elsif tiles[7] == "X" && tiles[2] == "X"
+				return 9
 			end
 		# COMPUTER FIRST
 		elsif @board.move_count == 2

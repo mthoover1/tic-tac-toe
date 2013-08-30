@@ -18,7 +18,7 @@ describe GameController do
 	end
 
 	it "should execute a coin toss to determine 'next move' upon game creation" do
-		["H","C"].should include(game.next_move)
+		["H","C"].should include(game.next_player)
 	end
 
 	it "should show the board" do
@@ -28,27 +28,27 @@ describe GameController do
 	end
 
 	it "should execute a computer move when computer has 'next move'" do
-		game.next_move = "C"
+		game.instance_variable_set(:@next_player, "C")
 		game.should_receive(:computer_move)
 		game.move
 	end
 
 	it "should execute a human move when human has 'next move'" do
-		game.next_move = "H"
+		game.instance_variable_set(:@next_player, "H")
 		game.should_receive(:human_move)
 		game.move
 	end
 
-	it "should update the 'next move' after a human move" do
-		game.next_move = "C"
-		game.update_next_move
-		game.next_move.should == "H"
+	it "should update the 'next player' after a human move" do
+		game.instance_variable_set(:@next_player, "H")
+		game.update_next_player
+		game.instance_variable_get(:@next_player).should == "C"
 	end
 
-	it "should update the 'next move' after a computer move" do
-		game.next_move = "H"
-		game.update_next_move
-		game.next_move.should == "C"
+	it "should update the 'next player' after a computer move" do
+		game.instance_variable_set(:@next_player, "C")
+		game.update_next_player
+		game.instance_variable_get(:@next_player).should == "H"
 	end
 
 	it "should not make a move if game is won" do

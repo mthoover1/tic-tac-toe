@@ -12,12 +12,21 @@ describe ComputerPlayer do
 
 	it "should win if possible" do
 		board.stub(tiles: "XXOX--O--")
-		computer.try_to_win.should == 5
+		computer.should_receive(:look_for_opening).with("O")
+		computer.try_to_win
 	end
 
 	it "should block if possible" do
 		board.stub(tiles: "-X--XO---")
-		computer.try_to_block.should == 8
+		computer.should_receive(:look_for_opening).with("X")
+		computer.try_to_block
+	end
+
+	it "should find an opening where 1 more play makes a winning combo" do
+		board.stub(tiles: "X-XOO----")
+		computer.look_for_opening("X").should == 2
+		board.stub(tiles: "X-XOO----")
+		computer.look_for_opening("O").should == 6
 	end
 
 	it "should cycle through different move types" do
@@ -45,6 +54,12 @@ describe ComputerPlayer do
 
 		board.stub(tiles: "X---O---X", move_count: 3)
 		[2,4,6,8].should include(computer.strategic_move)
+
+		board.stub(tiles: "--XXO----", move_count: 3)
+		computer.strategic_move.should == 1
+
+		board.stub(tiles: "--X-O--X-", move_count: 3)
+		computer.strategic_move.should == 9
 
 		board.stub(tiles: "-X--O----", move_count: 2)
 		[7,9].should include(computer.strategic_move)

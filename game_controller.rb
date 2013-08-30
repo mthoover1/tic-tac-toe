@@ -1,19 +1,19 @@
 class GameController
-	attr_accessor :next_move  # for computer next move test
+	attr_reader :next_player
 
 	def initialize(board, interface, computer)
 		@board = board
 		@interface = interface
 		@computer = computer
-		@next_move = coin_toss
+		@next_player = coin_toss
 	end
 
 	def play
-		show_board
+		show_board   ### MAKE THIS A WHILE LOOP
 
 		until @board.won? || @board.tied?
 			move
-			update_next_move
+			update_next_player
 			show_board
 		end
 
@@ -31,8 +31,8 @@ class GameController
 	end
 
 	def move
-		human_move if @next_move == "H"
-		computer_move if @next_move == "C"
+		human_move if @next_player == "H"
+		computer_move if @next_player == "C"
 	end
 
 	def human_move
@@ -49,11 +49,7 @@ class GameController
 		@board.update(@computer.move, "O")
 	end
 
-	def update_next_move
-		if @next_move == "C"
-			@next_move = "H"
-		elsif @next_move == "H"
-			@next_move = "C"
-		end
+	def update_next_player
+		@next_player == "C" ? @next_player = "H" : @next_player = "C"
 	end
 end

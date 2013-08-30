@@ -64,6 +64,3 @@ describe Board do
 		board.tied?.should == false
 	end
 end
-
-
-

@@ -10,8 +10,8 @@ class Board
 	end
 
 	def to_s
-		pretty_board = tiles.split("").join(" ")
-		[5,11,17,18].each { |index| pretty_board[index] = "\n"}
+		pretty_board = tiles.split("").join(" ")                  #space out letters
+		[5,11,17,18].each { |index| pretty_board[index] = "\n"}   #insert new lines
 		pretty_board
 	end
 
@@ -39,7 +39,7 @@ class Board
 	end
 
 	def won?
-		WINNING_POSSIBILITIES.shuffle.each do |combo|
+		WINNING_POSSIBILITIES.each do |combo|
 			if ["X","O"].include?(tiles[combo[0]])
 				if tiles[combo[0]] == tiles[combo[1]] && tiles[combo[0]] == tiles[combo[2]]
 					return true
