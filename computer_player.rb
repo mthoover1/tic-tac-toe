@@ -50,8 +50,10 @@ class ComputerPlayer
 
 		# HUMAN FIRST
 		if @board.move_count == 1
-			return 1 if tiles[4] == "X"
-			return 5
+			return 5 if @board.tile_open?(5)
+			return 1
+			# return 1 if tiles[4] == "X" #top-left corner if center is taken
+			# return 5										#center
 		elsif @board.move_count == 3
 			if tiles[4] == "X" && tiles[8] == "X"
 				return [3,7].sample
