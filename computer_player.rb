@@ -131,7 +131,7 @@ class ComputerPlayer
 	end
 
 	def center_move
-		return 5 if @board.tile_open?(5)
+		5 if @board.tile_open?(5)
 	end
 
 	def random_move

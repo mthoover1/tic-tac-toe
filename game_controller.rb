@@ -9,7 +9,7 @@ class GameController
 	end
 
 	def play
-		show_board   ### MAKE THIS A WHILE LOOP
+		show_board   ### PUT THIS IN THE LOOP? (show_board JUST IN LOOP WOULD BE IDEAL)
 
 		until @board.won? || @board.tied?
 			move
