@@ -1,14 +1,16 @@
-require './board'
+require 'board'
 
 describe Board do
-	let(:board) { Board.new }
+	let(:board) { Board.new(3) }
 
-	it "should have nine tiles" do
+	it "should have the appropriate number of tiles" do
 		board.tiles.length.should == 9
+		Board.new(4).tiles.length.should == 16
 	end
 
 	it "should format the board for printing to screen" do
 		board.to_s.should == "- - -\n- - -\n- - -\n\n"
+		Board.new(4).to_s.should == "- - - -\n- - - -\n- - - -\n- - - -\n\n"
 	end
 
 	it "should know if a tile is open" do
@@ -45,6 +47,7 @@ describe Board do
 		board.won?.should == true
 		board.stub(tiles: "OX--X-OX-")
 		board.won?.should == true
+
 	end
 
 	it "should know when there is not a winner" do
@@ -62,5 +65,30 @@ describe Board do
 	it "should know when a game is not a tie" do
 		board.stub(tiles: "XOOXOXXXO")
 		board.tied?.should == false
+	end
+
+	it "should build the board depending on size" do
+		board.build_board(3).should == "---------"
+		board.build_board(4).should == "----------------"
+	end
+
+	it "should generate the winning possibilities" do
+		board.generate_winning_possibilities(3).should == [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
+		board.generate_winning_possibilities(4).should == [[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15],[0,4,8,12],[1,5,9,13],[2,6,10,14],[3,7,11,15],[0,5,10,15],[3,6,9,12]]
+	end
+
+	it "should generate horizontal winning possibilities" do
+		board.generate_horizontals(3).should == [[0,1,2],[3,4,5],[6,7,8]]
+		board.generate_horizontals(4).should == [[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]]
+	end
+
+	it "should generate vertical winning possibilities" do
+		board.generate_verticals(2).should == [[0,2],[1,3]]
+		board.generate_verticals(4).should == [[0,4,8,12],[1,5,9,13],[2,6,10,14],[3,7,11,15]]
+	end
+
+	it "should generate diagonal winning possibilities" do
+		board.generate_diagonals(2).should == [[0,3],[1,2]]
+		board.generate_diagonals(4).should == [[0,5,10,15],[3,6,9,12]]
 	end
 end

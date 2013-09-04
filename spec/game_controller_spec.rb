@@ -1,15 +1,16 @@
-require './game_controller'
-require	'./interface'
-require './board'
-require './computer_player'
+require 'game_controller'
+require	'interface'
+require 'board'
+require 'computer_player'
 
 describe GameController do
-	let(:board) { Board.new }
+	let(:board) { Board.new(3) }
 	let(:interface) { Interface.new }
 	let(:computer) { ComputerPlayer.new(board) }
 	let(:game) { GameController.new(board, interface, computer) }
 
 	before(:each) do
+		interface.stub(gets: "3\n")
 		game.stub(:puts)
 	end
 
@@ -87,5 +88,9 @@ describe GameController do
 	it "should print instructions with board" do
 		interface.should_receive(:instructions)
 		game.show_board
+	end
+
+	it "should get user's pick of board size" do
+		pending "board needs the size upon creation as of now" # game.get_board_size.
 	end
 end

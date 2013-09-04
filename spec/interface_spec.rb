@@ -1,4 +1,4 @@
-require './interface'
+require 'interface'
 
 describe Interface do
   let(:interface) { Interface.new }
@@ -8,7 +8,7 @@ describe Interface do
   end
 
   it "should print instructions to the screen" do
-    interface.instructions.should == "123\n456 <-- Tile Numbers\n789\n\n"
+    interface.instructions(3).should == "123\n456 <-- Tile Numbers\n789\n\n"
   end
 
   it "should prompt human for next move" do
@@ -20,10 +20,11 @@ describe Interface do
     interface.get_input.should == 5
   end
 
-  it "should not accept input outside of 1-9" do
-    interface.input_valid?(0).should == false
-    interface.input_valid?(8).should == true
-    interface.input_valid?(10).should == false
+  it "should not accept input outside of tile numbers" do
+    interface.input_valid?(0,3).should == false
+    interface.input_valid?(8,3).should == true
+    interface.input_valid?(10,3).should == false
+    interface.input_valid?(16,4).should == true
   end
 
   it "should display results of a tie" do
@@ -39,5 +40,9 @@ describe Interface do
   it "should display results of a computer win" do
     board = double("board", won?: true, tied?: false, last_player: "O")
     interface.display_results(board).should == "Computer Wins"
+  end
+
+  it "should prompt user for game board size choice" do
+    interface.pick_board_size.should == "Enter 3 for 3x3\nEnter 4 for 4x4\n"
   end
 end

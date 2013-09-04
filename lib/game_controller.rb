@@ -9,6 +9,8 @@ class GameController
 	end
 
 	def play
+		# get_board_size
+
 		show_board   ### PUT THIS IN THE LOOP? (show_board JUST IN LOOP WOULD BE IDEAL)
 
 		until @board.won? || @board.tied?
@@ -24,9 +26,22 @@ class GameController
 		["H","C"].sample
 	end
 
+	# def get_board_size
+	# 	puts @interface.clear_screen
+
+	# 	size = 0
+	# 	until size == 3 || size == 4
+	# 		puts @interface.pick_board_size
+	# 		size = @interface.get_input
+	# 	end
+
+	# 	puts size
+	# 	sleep (1.0)
+	# end
+
 	def show_board
 		puts @interface.clear_screen
-		puts @interface.instructions
+		puts @interface.instructions(@board.size)
 		puts @board
 	end
 
@@ -37,7 +52,7 @@ class GameController
 
 	def human_move
 		move = 0
-		until @interface.input_valid?(move) && @board.tile_open?(move)
+		until @interface.input_valid?(move, @board.size) && @board.tile_open?(move)
 			puts @interface.prompt_human
 			move = @interface.get_input
 		end

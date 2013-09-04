@@ -1,10 +1,14 @@
-require './interface'
-require './board'
-require './computer_player'
-require './game_controller'
+require './lib/interface'
+require './lib/board'
+require './lib/computer_player'
+require './lib/game_controller'
 
 interface = Interface.new
-board = Board.new
+
+puts interface.clear_screen
+puts interface.pick_board_size
+
+board = Board.new(interface.get_input)
 computer = ComputerPlayer.new(board)
 game = GameController.new(board, interface, computer)
 

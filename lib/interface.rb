@@ -3,8 +3,16 @@ class Interface
 		"\e[H\e[2J\n"
 	end
 
-	def instructions
-		"123\n456 <-- Tile Numbers\n789\n\n"
+	def instructions(size)
+		if size == 3
+			"123\n456 <-- Tile Numbers\n789\n\n"
+		elsif size == 4
+			"1  2  3  4\n5  6  7  8 <-- Tile Numbers\n9  10 11 12\n13 14 15 16\n\n"
+		end
+	end
+
+	def pick_board_size
+		"Enter 3 for 3x3\nEnter 4 for 4x4\n"
 	end
 
 	def prompt_human
@@ -16,8 +24,8 @@ class Interface
 		input.to_i
 	end
 
-	def input_valid?(input)
-		input >= 1 && input <= 9
+	def input_valid?(input, size)
+		input >= 1 && input <= (size**2)
 	end
 
 	def display_results(board)

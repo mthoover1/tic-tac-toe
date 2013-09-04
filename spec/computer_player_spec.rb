@@ -1,8 +1,8 @@
-require './computer_player'
-require './board'
+require 'computer_player'
+require 'board'
 
 describe ComputerPlayer do
-	let(:board) { Board.new }
+	let(:board) { Board.new(3) }
 	let(:computer) { ComputerPlayer.new(board) }
 
 	it "should make a random move" do
@@ -74,13 +74,36 @@ describe ComputerPlayer do
 		computer.strategic_move.should == 1
 	end
 
-	it "should make a hopeful move that requires a block" do
+	it "should make a hopeful move that moves towards a win" do
 		board.stub(tiles: "--XXO-OX-")
 		[1,9].should include(computer.hopeful_move)
+		board = Board.new(4)
+		computer = ComputerPlayer.new(board)
+		board.stub(tiles: "-XX----X-O-OXO--")
+		[9,11].should include(computer.hopeful_move)
+	end
+
+	it "should make the hopeful move with the most promise (most O's)" do
+		board = Board.new(4)
+		computer = ComputerPlayer.new(board)
+		board.stub(tiles: "X---X----O--O---")
+		[4,7].should include(computer.hopeful_move)
 	end
 
 	it "should take the center if it is open" do
 		board.stub(tiles: "---------")
 		computer.center_move.should == 5
+		board = Board.new(7)
+		computer = ComputerPlayer.new(board)
+		computer.center_move.should == 25
+	end
+
+	it "should take a corner on the first move on a board bigger than 3x3" do
+		board = Board.new(4)
+		computer = ComputerPlayer.new(board)
+		board.stub(tiles:"----------------", move_count: 0)
+		[1,4,13,16].should include(computer.strategic_move)
+		board.stub(tiles:"---X------------", move_count: 1)
+		[1,13,16].should include(computer.strategic_move)
 	end
 end
