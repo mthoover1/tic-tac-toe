@@ -91,4 +91,9 @@ describe Board do
 		board.generate_diagonals(2).should == [[0,3],[1,2]]
 		board.generate_diagonals(4).should == [[0,5,10,15],[3,6,9,12]]
 	end
+
+	it "should generate the tile locations of its corners" do
+		board.generate_corner_tile_numbers(4).should == [1,4,13,16]
+		board.generate_corner_tile_numbers(7).should == [1,7,43,49]
+	end
 end

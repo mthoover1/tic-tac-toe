@@ -108,11 +108,11 @@ class ComputerPlayer
 			end
 		end
 
-		if @board.size == 4
+		if @board.size >= 4 && @board.size.even?      #first computer move on even-sized big board (take a corner)
 			if @board.move_count == 0 || @board.move_count == 1
-				move = [1,4,13,16].sample
+				move = @board.corner_tile_numbers.sample
 				until tiles[move-1] == "-"
-					move = [1,4,13,16].sample
+					move = @board.corner_tile_numbers.sample
 				end
 				return move
 			end

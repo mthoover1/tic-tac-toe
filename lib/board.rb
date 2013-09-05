@@ -1,5 +1,5 @@
 class Board
-	attr_reader :tiles, :move_count, :last_player, :size, :winning_possibilities
+	attr_reader :tiles, :move_count, :last_player, :size, :winning_possibilities, :corner_tile_numbers
 
 	# Computer is O, Human is X
 
@@ -9,6 +9,7 @@ class Board
 		@last_player = ""
 		@move_count = 0
 		@winning_possibilities = generate_winning_possibilities(size)
+		@corner_tile_numbers = generate_corner_tile_numbers(size)
 	end
 
 	def build_board(size)
@@ -65,6 +66,10 @@ class Board
 		diagonals << diagonal
 
 		diagonals
+	end
+
+	def generate_corner_tile_numbers(size)
+		[1, size, size**2 - (size - 1), size**2]
 	end
 
 	def to_s

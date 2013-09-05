@@ -4,15 +4,26 @@ class Interface
 	end
 
 	def instructions(size)
-		if size == 3
-			"123\n456 <-- Tile Numbers\n789\n\n"
-		elsif size == 4
-			"1  2  3  4\n5  6  7  8 <-- Tile Numbers\n9  10 11 12\n13 14 15 16\n\n"
+		total = size ** 2
+		output_string = ""
+
+		total.times do |i|
+			number = i + 1
+
+			if number % size == 0
+				output_string << "#{number}\n"
+			elsif number < 10
+				output_string << "#{number}  "
+			elsif number >= 10
+				output_string << "#{number} "
+			end
 		end
+
+		output_string << "\n"
 	end
 
 	def pick_board_size
-		"Enter 3 for 3x3\nEnter 4 for 4x4\n"
+		"Enter board width:\n"
 	end
 
 	def prompt_human
