@@ -40,6 +40,10 @@ describe ComputerPlayer do
 		[3,7].should include(computer.move)
 		board.stub(tiles: "---------", move_count: 0) #center
 		computer.move.should == 5
+		big_board = Board.new(4)											#future block on 4x4
+		big_computer = ComputerPlayer.new(big_board)
+		big_board.stub(tiles: "--XX----X---XOOO", move_count: 7)
+		big_computer.move.should == 1
 	end
 
 	it "should make strategic moves" do
@@ -105,5 +109,29 @@ describe ComputerPlayer do
 		[1,4,13,16].should include(computer.strategic_move)
 		board.stub(tiles:"---X------------", move_count: 1)
 		[1,13,16].should include(computer.strategic_move)
+	end
+
+	it "should prevent a move that sets up a human win scenario" do
+		board = Board.new(4)
+		computer = ComputerPlayer.new(board)
+		board.stub(tiles: "XX---O---O-X-O-X", move_count: 7)
+		computer.try_to_future_block.should == 4
+	end
+
+	it "should make a move that sets up two winning scenarios" do
+		board = Board.new(4)
+		computer = ComputerPlayer.new(board)
+		board.stub(tiles: "XX-O---OXX--OO--", move_count: 8)
+		computer.try_to_future_win.should == 16
+	end
+
+	it "should build a possibility when given a winning-combo and tiles" do
+		board.stub(tiles: "X--------")
+		computer.build_possibility([0,1,2], board.tiles).should == ["X","-","-"]
+	end
+
+	it "should know when a possibility is one move away from completion" do
+		computer.one_move_away?(["X","X","-"],"X").should == true
+		computer.one_move_away?(["X","X","-"],"O").should == false
 	end
 end

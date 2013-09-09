@@ -36,13 +36,18 @@ describe Interface do
     interface.display_results(board).should == "Cat's Game"
   end
 
+  it "should display results of an inevitiable cat's game" do
+    board = double("board", tied?: false, won?: false, future_cats_game?: true)
+    interface.display_results(board).should == "Cat's Game (Saving You Time)"
+  end
+
   it "should display results of a human win" do
-    board = double("board", won?: true, tied?: false, last_player: "X")
+    board = double("board", won?: true, tied?: false, future_cats_game?: false, last_player: "X")
     interface.display_results(board).should == "Human Wins!!"
   end
 
   it "should display results of a computer win" do
-    board = double("board", won?: true, tied?: false, last_player: "O")
+    board = double("board", won?: true, tied?: false, future_cats_game?: false, last_player: "O")
     interface.display_results(board).should == "Computer Wins"
   end
 

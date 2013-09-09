@@ -13,7 +13,7 @@ class GameController
 
 		show_board   ### PUT THIS IN THE LOOP? (show_board JUST IN LOOP WOULD BE IDEAL)
 
-		until @board.won? || @board.tied?
+		until @board.won? || @board.tied? || @board.future_cats_game?
 			move
 			update_next_player
 			show_board

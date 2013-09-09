@@ -6,7 +6,9 @@ class ComputerPlayer
 	def move
 		try_to_win ||
 		try_to_block ||
+		try_to_future_block ||
 		strategic_move ||
+		try_to_future_win ||
 		hopeful_move ||
 		center_move ||
 		random_move
@@ -21,21 +23,57 @@ class ComputerPlayer
 	end
 
 	def look_for_opening(letter)
-		tiles = @board.tiles
-
 		@board.winning_possibilities.each do |combo|
-			possibility = []
+			possibility = build_possibility(combo, @board.tiles)
 
-			combo.each do |location|
-				possibility << tiles[location]
-			end
-
-			if possibility.count("-") == 1 && possibility.include?(letter) && possibility.uniq.length == 2
+			if one_move_away?(possibility, letter)
 				combo_index = possibility.index("-")
 				return combo[combo_index] + 1
 			end
 		end
 		nil
+	end
+
+	def try_to_future_block
+		look_for_future_opening("X")
+	end
+
+	def try_to_future_win
+		look_for_future_opening("O")
+	end
+
+	def look_for_future_opening(letter)
+		tiles_array = @board.tiles.split("")
+
+		tiles_array.each_with_index do |tile, index|
+			test_tiles = tiles_array.join
+
+			if tile == "-"
+				win_chance_count = 0
+				test_tiles[index] = letter
+
+				@board.winning_possibilities.each do |combo|
+					possibility = build_possibility(combo, test_tiles)
+
+					win_chance_count += 1 if one_move_away?(possibility, letter)
+				end
+
+				return (index+1) if win_chance_count > 1
+			end
+		end
+		nil
+	end
+
+	def build_possibility(combo, tiles)
+		possibility = []
+		combo.each do |location|
+			possibility << tiles[location]
+		end
+		possibility
+	end
+
+	def one_move_away?(possibility, letter)
+		possibility.count("-") == 1 && possibility.include?(letter) && possibility.uniq.length == 2
 	end
 
 	def strategic_move
@@ -117,7 +155,6 @@ class ComputerPlayer
 				return move
 			end
 		end
-		nil
 	end
 
 	def hopeful_move
@@ -127,11 +164,7 @@ class ComputerPlayer
 
 		@board.winning_possibilities.shuffle.each do |combo|  # PUT "O" IN A POSSIBLE WINNING ROW
 			combo = combo.shuffle
-			possibility = []
-
-			combo.each do |location|
-				possibility << @board.tiles[location]
-			end
+			possibility = build_possibility(combo, @board.tiles)
 
 			if possibility.include?("O") && possibility.include?("-") && !possibility.include?("X")
 				o_count = possibility.count("O")
@@ -144,7 +177,6 @@ class ComputerPlayer
 		end
 
 		return best_combo[best_combo_index] + 1 if best_o_count > 0
-		nil
 	end
 
 	def center_move

@@ -95,6 +95,19 @@ class Board
 		@last_player = player
 	end
 
+	def future_cats_game?
+		@winning_possibilities.each do |combo|
+			possibility = []
+
+			combo.each do |location|
+				possibility << tiles[location]
+			end
+
+			return false if possibility.include?("-") && [1,2].include?(possibility.uniq.length)
+		end
+		true
+	end
+
 	def full?
 		!tiles.include?("-")
 	end

@@ -45,5 +45,6 @@ class Interface
 			return "Human Wins!!" if board.last_player == "X"
 			return "Computer Wins" if board.last_player == "O"
 		end
+		return "Cat's Game (Saving You Time)" if board.future_cats_game?
 	end
 end

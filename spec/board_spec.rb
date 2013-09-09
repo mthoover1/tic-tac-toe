@@ -96,4 +96,15 @@ describe Board do
 		board.generate_corner_tile_numbers(4).should == [1,4,13,16]
 		board.generate_corner_tile_numbers(7).should == [1,7,43,49]
 	end
+
+	it "should know when a cat's game is inevitable" do
+		board.stub(tiles: "---X-O---")
+		board.future_cats_game?.should == false
+		board = Board.new(5)
+		board.stub(tiles: "XXXOOXOOOOX-OOO-XXXOO--XX")
+		board.future_cats_game?.should == true
+		board = Board.new(4)
+		board.stub(tiles: "XXXO-OX-XOOXOOXO")
+		board.future_cats_game?.should == true
+	end
 end
