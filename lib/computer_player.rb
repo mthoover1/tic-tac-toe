@@ -43,10 +43,8 @@ class ComputerPlayer
 	end
 
 	def look_for_future_opening(letter)
-		tiles_array = @board.tiles.split("")
-
-		tiles_array.each_with_index do |tile, index|
-			test_tiles = tiles_array.join
+		@board.tiles.chars.each_with_index do |tile, index|
+			test_tiles = @board.tiles.dup
 
 			if tile == "-"
 				win_chance_count = 0
@@ -77,79 +75,93 @@ class ComputerPlayer
 	end
 
 	def strategic_move
+		return three_by_three_strategic_move if @board.size == 3
+		return four_by_four_strategic_move	if @board.size == 4
+	end
+
+	def three_by_three_strategic_move
+		return three_by_three_after_one_move if @board.move_count == 1
+		return three_by_three_after_two_moves if @board.move_count == 2
+		return three_by_three_after_three_moves if @board.move_count == 3
+		return three_by_three_after_four_moves if @board.move_count == 4
+	end
+
+	def three_by_three_after_one_move
+		return @board.tile_open?(5) ? 5 : 1    #take center if open, else take top-left
+	end
+
+	def three_by_three_after_two_moves
 		tiles = @board.tiles
-
-		if @board.size == 3
-			# HUMAN FIRST
-			if @board.move_count == 1
-				return @board.tile_open?(5) ? 5 : 1     #take center if open, else take top-left
-
-			elsif @board.move_count == 3
-				if tiles[4] == "X" && tiles[8] == "X"
-					return [3,7].sample
-				elsif (tiles[0] == "X" && tiles[8] == "X") || (tiles[2] == "X" && tiles[6] == "X")
-					return [1,3,5,7].sample + 1
-				elsif tiles[3] == "X" && tiles[2] == "X" # HUMAN PLAYS EDGE AND A FAR CORNER (computer plays corner in between)
-					return 1
-				elsif tiles[3] == "X" && tiles[8] == "X"
-					return 7
-				elsif tiles[1] == "X" && tiles[6] == "X"
-					return 1
-				elsif tiles[1] == "X" && tiles[8] == "X"
-					return 3
-				elsif tiles[5] == "X" && tiles[0] == "X"
-					return 3
-				elsif tiles[5] == "X" && tiles[6] == "X"
-					return 9
-				elsif tiles[7] == "X" && tiles[0] == "X"
-					return 7
-				elsif tiles[7] == "X" && tiles[2] == "X"
-					return 9
-				end
-			# COMPUTER FIRST
-			elsif @board.move_count == 2
-				if tiles[1] == "X"     # HUMAN PLAYS EDGE
-					return [7,9].sample
-				elsif tiles[3] == "X"
-					return [3,9].sample
-				elsif tiles[5] == "X"
-					return [1,7].sample
-				elsif tiles[7] == "X"
-					return [1,3].sample
-				elsif tiles[0] == "X"  # HUMAN PLAYS CORNER
-					return 9
-				elsif tiles[2] == "X"
-					return 7
-				elsif tiles[6] == "X"
-					return 3
-				elsif tiles[8] == "X"
-					return 1
-				end
-			elsif @board.move_count == 4   # HUMAN PLAYS CORNER AND SPECIFIC EDGE
-				if tiles[0] == "X" && tiles[5] == "X"
-					return 7
-				elsif tiles[0] == "X" && tiles[7] == "X"
-					return 3
-				elsif tiles[2] == "X" && tiles[3] == "X"
-					return 9
-				elsif tiles[2] == "X" && tiles[7] == "X"
-					return 1
-				elsif tiles[6] == "X" && tiles[5] == "X"
-					return 1
-				elsif tiles[6] == "X" && tiles[1] == "X"
-					return 9
-				elsif tiles[8] == "X" && tiles[1] == "X"
-					return 7
-				elsif tiles[8] == "X" && tiles[3] == "X"
-					return 3
-				end
-			end
+		if tiles[1] == "X"     # HUMAN PLAYS EDGE
+			return [7,9].sample
+		elsif tiles[3] == "X"
+			return [3,9].sample
+		elsif tiles[5] == "X"
+			return [1,7].sample
+		elsif tiles[7] == "X"
+			return [1,3].sample
+		elsif tiles[0] == "X"  # HUMAN PLAYS CORNER
+			return 9
+		elsif tiles[2] == "X"
+			return 7
+		elsif tiles[6] == "X"
+			return 3
+		elsif tiles[8] == "X"
+			return 1
 		end
+	end
 
+	def three_by_three_after_three_moves
+		tiles = @board.tiles
+		if tiles[4] == "X" && tiles[8] == "X"
+			return [3,7].sample
+		elsif (tiles[0] == "X" && tiles[8] == "X") || (tiles[2] == "X" && tiles[6] == "X")
+			return [1,3,5,7].sample + 1
+		elsif tiles[3] == "X" && tiles[2] == "X" # HUMAN PLAYS EDGE AND A FAR CORNER (computer plays corner in between)
+			return 1
+		elsif tiles[3] == "X" && tiles[8] == "X"
+			return 7
+		elsif tiles[1] == "X" && tiles[6] == "X"
+			return 1
+		elsif tiles[1] == "X" && tiles[8] == "X"
+			return 3
+		elsif tiles[5] == "X" && tiles[0] == "X"
+			return 3
+		elsif tiles[5] == "X" && tiles[6] == "X"
+			return 9
+		elsif tiles[7] == "X" && tiles[0] == "X"
+			return 7
+		elsif tiles[7] == "X" && tiles[2] == "X"
+			return 9
+		end
+	end
+
+	def three_by_three_after_four_moves
+		tiles = @board.tiles
+		if tiles[0] == "X" && tiles[5] == "X"
+			return 7
+		elsif tiles[0] == "X" && tiles[7] == "X"
+			return 3
+		elsif tiles[2] == "X" && tiles[3] == "X"
+			return 9
+		elsif tiles[2] == "X" && tiles[7] == "X"
+			return 1
+		elsif tiles[6] == "X" && tiles[5] == "X"
+			return 1
+		elsif tiles[6] == "X" && tiles[1] == "X"
+			return 9
+		elsif tiles[8] == "X" && tiles[1] == "X"
+			return 7
+		elsif tiles[8] == "X" && tiles[3] == "X"
+			return 3
+		end
+	end
+
+	def four_by_four_strategic_move
 		if @board.size >= 4 && @board.size.even?      #first computer move on even-sized big board (take a corner)
 			if @board.move_count == 0 || @board.move_count == 1
 				move = @board.corner_tile_numbers.sample
-				until tiles[move-1] == "-"
+				until @board.tiles[move-1] == "-"
 					move = @board.corner_tile_numbers.sample
 				end
 				return move
