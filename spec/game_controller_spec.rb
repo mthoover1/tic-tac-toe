@@ -90,7 +90,7 @@ describe GameController do
 		game.show_board
 	end
 
-	it "should get user's pick of board size" do
-		pending "board needs the size upon creation as of now" # game.get_board_size.
-	end
+	# it "should get user's pick of board size" do
+	# 	pending "board needs the size upon creation as of now" # game.get_board_size.
+	# end
 end

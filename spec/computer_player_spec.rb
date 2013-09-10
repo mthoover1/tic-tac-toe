@@ -111,6 +111,13 @@ describe ComputerPlayer do
 			board.corner_tile_numbers.should include(computer.strategic_move)
 			board.tiles[0].should == "X"
 		end
+
+		it "should make a strategic_move for big boards, first computer move, even sized board" do
+			board = Board.new(6)
+			computer = ComputerPlayer.new(board)
+			board.stub(tiles: "--------------------X---------------", move_count: 1)
+			[15,16,22].should include(computer.strategic_move)
+		end
 	end
 
 

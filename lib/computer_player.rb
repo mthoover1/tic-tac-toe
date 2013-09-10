@@ -6,9 +6,9 @@ class ComputerPlayer
 	def move
 		try_to_win ||
 		try_to_block ||
+		try_to_future_win ||
 		try_to_future_block ||
 		strategic_move ||
-		try_to_future_win ||
 		hopeful_move ||
 		center_move ||
 		random_move
@@ -77,6 +77,7 @@ class ComputerPlayer
 	def strategic_move
 		return three_by_three_strategic_move if @board.size == 3
 		return four_by_four_strategic_move	if @board.size == 4
+		return big_board_strategic_move if @board.size > 4 && @board.size.even?
 	end
 
 	def three_by_three_strategic_move
@@ -158,14 +159,23 @@ class ComputerPlayer
 	end
 
 	def four_by_four_strategic_move
-		if @board.size >= 4 && @board.size.even?      #first computer move on even-sized big board (take a corner)
-			if @board.move_count == 0 || @board.move_count == 1
+		if @board.move_count == 0 || @board.move_count == 1
+			move = @board.corner_tile_numbers.sample
+			until @board.tiles[move-1] == "-"
 				move = @board.corner_tile_numbers.sample
-				until @board.tiles[move-1] == "-"
-					move = @board.corner_tile_numbers.sample
-				end
-				return move
 			end
+			return move
+		end
+	end
+
+	def big_board_strategic_move
+		if @board.move_count == 0 || @board.move_count == 1
+			center_tiles = @board.generate_center_tile_numbers
+			move = center_tiles.sample
+			until @board.tiles[move-1] == "-"
+				move = center_tiles.sample
+			end
+			return move
 		end
 	end
 
