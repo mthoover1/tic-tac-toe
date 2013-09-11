@@ -1,8 +1,6 @@
 class Board
   attr_reader :tiles, :move_count, :last_player, :size, :winning_possibilities, :corner_tile_numbers, :win_length
 
-  # Computer is O, Human is X
-
   def initialize(size)
     @size = size
     @tiles = build_board(size)
@@ -124,7 +122,7 @@ class Board
   end
 
   def tile_open?(tile_number)
-    tiles[tile_number - 1] == "-"
+    tiles[tile_number - 1] == "-" if tile_number >= 1
   end
 
   def update(tile_number, player)

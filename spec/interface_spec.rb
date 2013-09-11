@@ -4,7 +4,7 @@ describe Interface do
   let(:interface) { Interface.new }
 
   it "should clear the screen" do
-    interface.clear_screen.should == "\e[H\e[2J\n"
+    interface.clear_screen.should == "\e[H\e[2J"
   end
 
   it "should print the tile-number-diagram to the screen" do
@@ -19,13 +19,6 @@ describe Interface do
   it "should get human input" do
     interface.stub(gets: "5\n")
     interface.get_input.should == 5
-  end
-
-  it "should not accept input outside of tile numbers" do
-    interface.input_valid?(0,3).should == false
-    interface.input_valid?(8,3).should == true
-    interface.input_valid?(10,3).should == false
-    interface.input_valid?(16,4).should == true
   end
 
   it "should display results of a tie" do

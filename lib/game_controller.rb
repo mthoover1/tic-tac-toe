@@ -55,7 +55,7 @@ class GameController
 
 	def human_move
 		move = 0
-		until @interface.input_valid?(move, @board.size) && @board.tile_open?(move)
+		until @board.tile_open?(move)
 			puts @interface.prompt_human
 			move = @interface.get_input
 		end

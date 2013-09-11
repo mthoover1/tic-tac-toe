@@ -1,6 +1,9 @@
 class Interface
+	NEW_LINE = "\n"
+	CLEAR_SCREEN = "\e[H\e[2J"
+
 	def clear_screen
-		"\e[H\e[2J\n"
+		CLEAR_SCREEN
 	end
 
 	def tile_number_diagram(size)
@@ -11,19 +14,31 @@ class Interface
 			number = i + 1
 
 			if number % size == 0
-				output_string << "#{number}\n"
-			elsif number < 10
-				output_string << "#{number}  "
+				output_string << tile_end_of_row(number)
+			elsif number <= 9
+				output_string << tile_single_digit(number)
 			elsif number >= 10
-				output_string << "#{number} "
+				output_string << tile_double_digit(number)
 			end
 		end
 
-		output_string << "\n"
+		output_string + NEW_LINE
+	end
+
+	def tile_end_of_row(number)
+		"#{number}" + NEW_LINE
+	end
+
+	def tile_single_digit(number)
+		"#{number}  "
+	end
+
+	def tile_double_digit(number)
+		"#{number} "
 	end
 
 	def pick_board_size
-		"Enter board width:\n"
+		"Enter board width:" + NEW_LINE
 	end
 
 	def prompt_human
@@ -33,10 +48,6 @@ class Interface
 	def get_input
 		input = gets.chomp
 		input.to_i
-	end
-
-	def input_valid?(input, size)
-		input >= 1 && input <= (size**2)
 	end
 
 	def display_results(board, human, computer)
