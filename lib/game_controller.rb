@@ -44,7 +44,7 @@ class GameController
 
 	def show_board
 		puts @interface.clear_screen
-		puts @interface.instructions(@board.size)
+		puts @interface.tile_number_diagram(@board.size)
 		puts @board
 	end
 

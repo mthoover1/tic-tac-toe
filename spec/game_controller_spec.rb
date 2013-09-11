@@ -85,8 +85,8 @@ describe GameController do
 		game.show_board
 	end
 
-	it "should print instructions with board" do
-		interface.should_receive(:instructions)
+	it "should print tile-number-diagram with board" do
+		interface.should_receive(:tile_number_diagram)
 		game.show_board
 	end
 

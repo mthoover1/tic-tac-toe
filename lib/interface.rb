@@ -3,7 +3,7 @@ class Interface
 		"\e[H\e[2J\n"
 	end
 
-	def instructions(size)
+	def tile_number_diagram(size)
 		total = size ** 2
 		output_string = ""
 

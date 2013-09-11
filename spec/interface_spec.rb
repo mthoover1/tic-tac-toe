@@ -7,12 +7,9 @@ describe Interface do
     interface.clear_screen.should == "\e[H\e[2J\n"
   end
 
-  it "should print instructions to the screen" do
-    interface.instructions(3).should == "1  2  3\n4  5  6\n7  8  9\n\n"
-  end
-
-  it "should print instructions for a board of any (reasonable) size" do
-    interface.instructions(5).should == "1  2  3  4  5\n6  7  8  9  10\n11 12 13 14 15\n16 17 18 19 20\n21 22 23 24 25\n\n"
+  it "should print the tile-number-diagram to the screen" do
+    interface.tile_number_diagram(3).should == "1  2  3\n4  5  6\n7  8  9\n\n"
+    interface.tile_number_diagram(5).should == "1  2  3  4  5\n6  7  8  9  10\n11 12 13 14 15\n16 17 18 19 20\n21 22 23 24 25\n\n"
   end
 
   it "should prompt human for next move" do
