@@ -1,6 +1,9 @@
 class GameController
 	attr_reader :next_player
 
+	HUMAN = "X"
+	COMPUTER = "O"
+
 	def initialize(board, interface, computer)
 		@board = board
 		@interface = interface
@@ -11,7 +14,7 @@ class GameController
 	def play
 		# get_board_size
 
-		show_board   ### PUT THIS IN THE LOOP? (show_board JUST IN LOOP WOULD BE IDEAL)
+		show_board
 
 		until @board.won? || @board.tied? || @board.future_cats_game?
 			move
@@ -19,11 +22,11 @@ class GameController
 			show_board
 		end
 
-		puts @interface.display_results(@board)
+		puts @interface.display_results(@board, HUMAN, COMPUTER)
 	end
 
 	def coin_toss
-		["H","C"].sample
+		[HUMAN,COMPUTER].sample
 	end
 
 	# def get_board_size
@@ -46,8 +49,8 @@ class GameController
 	end
 
 	def move
-		human_move if @next_player == "H"
-		computer_move if @next_player == "C"
+		human_move if @next_player == HUMAN
+		computer_move if @next_player == COMPUTER
 	end
 
 	def human_move
@@ -56,15 +59,15 @@ class GameController
 			puts @interface.prompt_human
 			move = @interface.get_input
 		end
-		@board.update(move, "X")
+		@board.update(move, HUMAN)
 	end
 
 	def computer_move
 		sleep(0.5) if @board.move_count > 0
-		@board.update(@computer.move, "O")
+		@board.update(@computer.move, COMPUTER)
 	end
 
 	def update_next_player
-		@next_player == "C" ? @next_player = "H" : @next_player = "C"
+		@next_player == COMPUTER ? @next_player = HUMAN : @next_player = COMPUTER
 	end
 end

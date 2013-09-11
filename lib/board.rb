@@ -101,21 +101,6 @@ class Board
     diagonals
   end
 
-  #       0 1 2
-  #       3 4 5
-  #       6 7 8
-
-  #       0  1  2  3
-  #       4  5  6  7
-  #       8  9  10 11
-  #       12 13 14 15
-
-  #       0  1  2  3  4
-  #       5  6  7  8  9
-  #       10 11 12 13 14
-  #       15 16 17 18 19
-  #       20 21 22 23 24
-
   def generate_corner_tile_numbers(size)
     [1, size, size**2 - (size - 1), size**2]
   end
@@ -167,7 +152,7 @@ class Board
 
   def won?
     @winning_possibilities.each do |combo|
-      if ["X","O"].include?(tiles[combo[0]])
+      if !["-"].include?(tiles[combo[0]])
         possibility = []
 
         combo.each do |location|

@@ -39,11 +39,11 @@ class Interface
 		input >= 1 && input <= (size**2)
 	end
 
-	def display_results(board)
+	def display_results(board, human, computer)
 		return "Cat's Game" if board.tied?
 		if board.won?
-			return "Human Wins!!" if board.last_player == "X"
-			return "Computer Wins" if board.last_player == "O"
+			return "Human Wins!!" if board.last_player == human
+			return "Computer Wins" if board.last_player == computer
 		end
 		return "Cat's Game (Saving You Time)" if board.future_cats_game?
 	end
