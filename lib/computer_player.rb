@@ -1,3 +1,5 @@
+require 'pry'
+
 class ComputerPlayer
 
 	HUMAN = "X"
@@ -189,15 +191,25 @@ class ComputerPlayer
 		best_combo_index = 0
 
 		@board.winning_possibilities.shuffle.each do |combo|  # PUT COMPUTER IN A POSSIBLE WINNING ROW
-			combo = combo.shuffle
+			combo = combo.reverse if [0,1].sample == 1
 			possibility = build_possibility(combo, @board.tiles)
 
 			if possibility.include?(COMPUTER) && possibility.include?("-") && !possibility.include?(HUMAN)
 				o_count = possibility.count(COMPUTER)
+
 				if o_count > best_o_count
 					best_o_count = o_count
 					best_combo = combo
-					best_combo_index = possibility.index("-")
+
+					o_index = possibility.index(COMPUTER)
+
+					if possibility[o_index+1] == "-"
+						best_combo_index = o_index+1
+					elsif possibility[o_index-1] == "-" && o_index > 0
+						best_combo_index = o_index-1
+					elsif possibility[o_index+2] == "-"
+						best_combo_index = o_index+2
+					end
 				end
 			end
 		end
