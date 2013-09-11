@@ -1,207 +1,188 @@
 class Board
-	attr_reader :tiles, :move_count, :last_player, :size, :winning_possibilities, :corner_tile_numbers
+  attr_reader :tiles, :move_count, :last_player, :size, :winning_possibilities, :corner_tile_numbers, :win_length
 
-	# Computer is O, Human is X
+  # Computer is O, Human is X
 
-	def initialize(size)
-		@size = size
-		@tiles = build_board(size)
-		@last_player = ""
-		@move_count = 0
-		@winning_possibilities = generate_winning_possibilities(size)
-		@corner_tile_numbers = generate_corner_tile_numbers(size)
-	end
+  def initialize(size)
+    @size = size
+    @tiles = build_board(size)
+    @win_length = generate_win_length(size)
+    @last_player = ""
+    @move_count = 0
+    @winning_possibilities = generate_winning_possibilities(size)
+    @corner_tile_numbers = generate_corner_tile_numbers(size)
+  end
 
-	def build_board(size)
-		"-"*(size**2)
-	end
+  def build_board(size)
+    "-"*(size**2)
+  end
 
-	def generate_winning_possibilities(size)
-		generate_horizontals(size) + generate_verticals(size) + generate_diagonals(size)
-	end
+  def generate_win_length(size)
+    if size == 3
+      3
+    elsif size >= 4
+      4
+    end
+  end
 
-	def generate_horizontals(size)
-		return generate_big_board_horizontals(size) if size > 4
+  def generate_winning_possibilities(size)
+    generate_horizontals(size) + generate_verticals(size) + generate_diagonals(size)
+  end
 
- 		horizontals = []
+  def generate_horizontals(size)
+    if size == 3
+      win_length = 3
+    elsif size >= 4
+      win_length = 4
+    end
 
-		size.times do |i|
-			start = size * i
-			combo = []
-			size.times do |index|
-				combo << start + index
-			end
-			horizontals << combo
-		end
+    horizontals = []
 
-		horizontals
-	end
+    size.times do |row_index|
+      (size - (win_length-1)).times do |combo_count|
+        start = size*row_index + combo_count
+        combo = []
+        win_length.times do |i|
+          combo << start + i
+        end
+        horizontals << combo
+      end
+    end
 
-	def generate_verticals(size)
-		return generate_big_board_verticals(size) if size > 4
+    horizontals
+  end
 
-		verticals = []
+  def generate_verticals(size)
+    if size == 3
+      win_length = 3
+    elsif size >= 4
+      win_length = 4
+    end
 
-		size.times do |i|
-			start = i
-			combo = []
-			size.times do |index|
-				combo << start + size*index
-			end
-			verticals << combo
-		end
+    verticals = []
 
-		verticals
-	end
+    size.times do |column_index|
+      (size - (win_length-1)).times do |combo_count|
+        start = column_index + size*combo_count
+        combo = []
+        win_length.times do |i|
+          combo << start + size*i
+        end
+        verticals << combo
+      end
+    end
 
-	def generate_diagonals(size)
-		return generate_big_board_diagonals(size) if size > 4
+    verticals
+  end
 
-		diagonals = []
+  def generate_diagonals(size)
+    tile_set = (0..(size**2 - 1)).to_a
+    diagonals = []
 
-		diagonal = []	      #diagonal 1
-		size.times do |i|
-			diagonal << (size + 1) * i
-		end
-		diagonals << diagonal
+    tile_set.each do |tile|
+      row = tile / size
+      column = tile % size
+      combo = []
 
-		diagonal = []	      #diagonal 2
-		size.times do |i|
-			diagonal << (size * (i+1)) - (i + 1)
-		end
-		diagonals << diagonal
+      if row + win_length <= size && column + win_length <= size
+        win_length.times do |i|
+          combo << tile + (size+1)*i
+        end
+        diagonals << combo
 
-		diagonals
-	end
+      elsif row + win_length <= size && column - win_length >= -1
+        win_length.times do |i|
+          combo << tile + (size-1)*i
+        end
+        diagonals << combo
+      end
+    end
 
-	def generate_big_board_horizontals(size)
-		horizontals = []
+    diagonals
+  end
 
-		size.times do |row_index|
-			(size-3).times do |combo_count|
-				start = size*row_index + combo_count
-				combo = []
-				4.times do |i|
-					combo << start + i
-				end
-				horizontals << combo
-			end
-		end
+  #       0 1 2
+  #       3 4 5
+  #       6 7 8
 
-		horizontals
-	end
+  #       0  1  2  3
+  #       4  5  6  7
+  #       8  9  10 11
+  #       12 13 14 15
 
-	def generate_big_board_verticals(size)
-		verticals = []
+  #       0  1  2  3  4
+  #       5  6  7  8  9
+  #       10 11 12 13 14
+  #       15 16 17 18 19
+  #       20 21 22 23 24
 
-		size.times do |column_index|
-			(size-3).times do |combo_count|
-				start = column_index + size*combo_count
-				combo = []
-				4.times do |i|
-					combo << start + size*i
-				end
-				verticals << combo
-			end
-		end
+  def generate_corner_tile_numbers(size)
+    [1, size, size**2 - (size - 1), size**2]
+  end
 
-		verticals
-	end
+  def generate_center_tile_numbers
+    mid_point = @size**2/2
+    [(mid_point - @size/2), (mid_point - @size/2 + 1), (mid_point + @size/2), (mid_point + @size/2 + 1)]
+  end
 
-	def generate_big_board_diagonals(size)
-		tile_set = (0..(size**2 - 1)).to_a
-		diagonals = []
+  def to_s
+    formatted = tiles.split("").join(" ")
 
-		tile_set.each do |tile|
-			if tile % size <= (size-4) && tile < size**2 - size*3
-				combo = []
-				4.times do |i|
-					combo << tile + i*(size+1)
-				end
-				diagonals << combo
-			end
-		end
+    index = @size*2 - 1
 
-		tile_set.each do |tile|
-			if tile % size >= 3 && tile <= size**2 - size*3
-				combo = []
-				4.times do |i|
-					combo << tile + i*(size-1)
-				end
-				diagonals << combo
-			end
-		end
+    size.times do
+      formatted[index] = "\n"
+      index += @size*2
+    end
 
-		diagonals
-	end
+    formatted << "\n"
+  end
 
-	def generate_corner_tile_numbers(size)
-		[1, size, size**2 - (size - 1), size**2]
-	end
+  def tile_open?(tile_number)
+    tiles[tile_number - 1] == "-"
+  end
 
-	def generate_center_tile_numbers
-		mid_point = @size**2/2
-		[(mid_point - @size/2), (mid_point - @size/2 + 1), (mid_point + @size/2), (mid_point + @size/2 + 1)]
-	end
+  def update(tile_number, player)
+    tiles[tile_number - 1] = player
+    @move_count += 1
+    @last_player = player
+  end
 
-	def to_s
-		formatted = tiles.split("").join(" ")
+  def future_cats_game?
+    @winning_possibilities.each do |combo|
+      possibility = []
 
-		index = @size*2 - 1
+      combo.each do |location|
+        possibility << tiles[location]
+      end
 
-		size.times do
-			formatted[index] = "\n"
-			index += @size*2
-		end
+      return false if possibility.include?("-") && [1,2].include?(possibility.uniq.length)
+    end
+    true
+  end
 
-		formatted << "\n"
-	end
+  def full?
+    !tiles.include?("-")
+  end
 
-	def tile_open?(tile_number)
-		tiles[tile_number - 1] == "-"
-	end
+  def won?
+    @winning_possibilities.each do |combo|
+      if ["X","O"].include?(tiles[combo[0]])
+        possibility = []
 
-	def update(tile_number, player)
-		tiles[tile_number - 1] = player
-		@move_count += 1
-		@last_player = player
-	end
+        combo.each do |location|
+          possibility << tiles[location]
+        end
 
-	def future_cats_game?
-		@winning_possibilities.each do |combo|
-			possibility = []
+        if possibility.uniq.length == 1
+          return true
+        end
+      end
+    end
+    false
+  end
 
-			combo.each do |location|
-				possibility << tiles[location]
-			end
-
-			return false if possibility.include?("-") && [1,2].include?(possibility.uniq.length)
-		end
-		true
-	end
-
-	def full?
-		!tiles.include?("-")
-	end
-
-	def won?
-		@winning_possibilities.each do |combo|
-			if ["X","O"].include?(tiles[combo[0]])
-				possibility = []
-
-				combo.each do |location|
-					possibility << tiles[location]
-				end
-
-				if possibility.uniq.length == 1
-					return true
-				end
-			end
-		end
-		false
-	end
-
-	def tied?
-		full? && !won?
-	end
+  def tied?
+    full? && !won?
+  end
 end

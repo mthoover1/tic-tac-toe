@@ -6,9 +6,9 @@ class ComputerPlayer
 	def move
 		try_to_win ||
 		try_to_block ||
+		strategic_move ||
 		try_to_future_win ||
 		try_to_future_block ||
-		strategic_move ||
 		hopeful_move ||
 		center_move ||
 		random_move

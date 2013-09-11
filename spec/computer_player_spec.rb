@@ -48,7 +48,7 @@ describe ComputerPlayer do
 
 
 
-	describe "Strategic Moves:" do
+	context "Strategic Moves:" do
 		it "should make strategic move for 3x3, human first, 1 move, center open" do
 			board.stub(tiles: "-X-------", move_count: 1)
 			computer.strategic_move.should == 5
@@ -66,9 +66,9 @@ describe ComputerPlayer do
 							  ["----OXX--", [9]],
 							  ["X---O--X-", [7]],
 							  ["--X-O--X-", [9]] 	]
-			tests.each do |test|
+			tests.each_with_index do |test, i|
 				board.stub(tiles: test[0], move_count: 3)
-				test[1].should include(computer.strategic_move)
+				test[1].should include(computer.strategic_move), "Test ##{i+1}: #{test[0]} should = #{test[1]}"
 			end
 		end
 

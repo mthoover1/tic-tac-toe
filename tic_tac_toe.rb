@@ -7,8 +7,9 @@ interface = Interface.new
 
 puts interface.clear_screen
 puts interface.pick_board_size
+board_size = interface.get_input
 
-board = Board.new(interface.get_input)
+board = Board.new(board_size)
 computer = ComputerPlayer.new(board)
 game = GameController.new(board, interface, computer)
 
