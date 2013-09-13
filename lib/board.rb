@@ -1,6 +1,9 @@
 class Board
   attr_reader :tiles, :move_count, :last_player, :size, :winning_possibilities, :corner_tile_numbers, :win_length
 
+  PLAYER1 = "X"
+  PLAYER2 = "O"
+
   def initialize(size)
     @size = size
     @tiles = build_board(size)

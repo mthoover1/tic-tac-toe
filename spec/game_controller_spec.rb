@@ -7,11 +7,25 @@ describe GameController do
 	let(:board) { Board.new(3) }
 	let(:interface) { Interface.new }
 	let(:computer) { ComputerPlayer.new(board) }
-	let(:game) { GameController.new(board, interface, computer) }
+	let(:game) { GameController.new(interface, board, computer) }
 
 	before(:each) do
 		interface.stub(gets: "3\n")
 		game.stub(:puts)
+	end
+
+	it "should create a board of the right size" do
+		new_game = GameController.new(interface)
+		new_game.stub(:puts)
+		new_game.create_board
+		new_game.board.tiles.should == "---------"
+	end
+
+	it "should create a computer player with the already existing board" do
+		new_game = GameController.new(interface, board)
+		new_game.stub(:puts)
+		new_game.create_computer_player
+		new_game.computer.board == board
 	end
 
 	it "should randomly choose who gets the first move" do

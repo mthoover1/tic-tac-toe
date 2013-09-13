@@ -1,18 +1,22 @@
 class GameController
-	attr_reader :next_player
+	attr_reader :next_player, :board, :computer
 
 	HUMAN = "X"
 	COMPUTER = "O"
 
-	def initialize(board, interface, computer)
-		@board = board
+	def initialize(interface, board = nil, computer = nil)
 		@interface = interface
+		@board = board
 		@computer = computer
 		@next_player = coin_toss
+		@player1 = nil
+		@player2 = nil
+		# @next_player = @player1
 	end
 
 	def play
-		# get_board_size
+		create_board if @board == nil
+		create_computer_player if @computer == nil
 
 		show_board
 
@@ -25,22 +29,21 @@ class GameController
 		puts @interface.display_results(@board, HUMAN, COMPUTER)
 	end
 
+	def create_board
+		puts @interface.clear_screen
+		puts @interface.pick_board_size
+		board_size = @interface.get_input
+
+		@board = Board.new(board_size)
+	end
+
+	def create_computer_player
+		@computer = ComputerPlayer.new(@board)
+	end
+
 	def coin_toss
 		[HUMAN,COMPUTER].sample
 	end
-
-	# def get_board_size
-	# 	puts @interface.clear_screen
-
-	# 	size = 0
-	# 	until size == 3 || size == 4
-	# 		puts @interface.pick_board_size
-	# 		size = @interface.get_input
-	# 	end
-
-	# 	puts size
-	# 	sleep (1.0)
-	# end
 
 	def show_board
 		puts @interface.clear_screen

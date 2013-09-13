@@ -1,6 +1,5 @@
-require 'pry'
-
 class ComputerPlayer
+	attr_reader :board
 
 	HUMAN = "X"
 	COMPUTER = "O"
@@ -15,6 +14,7 @@ class ComputerPlayer
 		strategic_move ||
 		try_to_future_win ||
 		try_to_future_block ||
+		# try_to_future_future_win ||
 		hopeful_move ||
 		center_move ||
 		random_move
@@ -41,11 +41,90 @@ class ComputerPlayer
 	end
 
 	def try_to_future_block
-		look_for_future_opening(HUMAN)
+		# look_for_future_opening(HUMAN)
+		best_tile_location = nil
+		best_win_chance_count = 0
+		best_nearby_o_count = 0
+
+		@board.tiles.chars.each_with_index do |tile, tile_location|
+			test_tiles = @board.tiles.dup
+
+			if tile == "-"
+				win_chance_count = 0
+				nearby_o_count = 0
+
+				test_tiles[tile_location] = HUMAN
+
+				@board.winning_possibilities.each do |combo|
+					possibility = build_possibility(combo, test_tiles)
+
+					win_chance_count += 1 if one_move_away?(possibility, HUMAN)
+				end
+
+				test_tiles[tile_location] = "-"
+
+				if win_chance_count >= best_win_chance_count
+					@board.winning_possibilities.each do |combo|
+						if combo.include?(tile_location)
+							possibility = build_possibility(combo, test_tiles)
+
+							nearby_o_count += 1 if possibility.include?(COMPUTER) && !possibility.include?(HUMAN)
+						end
+					end
+				end
+
+				if win_chance_count >= 2 && nearby_o_count >= best_nearby_o_count
+					best_win_chance_count = win_chance_count
+					best_nearby_o_count = nearby_o_count
+					best_tile_location = tile_location
+				end
+			end
+		end
+		return (best_tile_location+1) if best_win_chance_count >= 2
 	end
 
-	def try_to_future_win
-		look_for_future_opening(COMPUTER)
+	def try_to_future_win(tiles = @board.tiles)
+		# look_for_future_opening(COMPUTER)
+
+		best_tile_location = nil
+		best_win_chance_count = 0
+		best_nearby_x_count = 0
+
+		tiles.chars.each_with_index do |tile, tile_location|
+			test_tiles = tiles.dup
+
+			if tile == "-"
+				win_chance_count = 0
+				nearby_x_count = 0
+
+				test_tiles[tile_location] = COMPUTER
+
+				@board.winning_possibilities.each do |combo|
+					possibility = build_possibility(combo, test_tiles)
+
+					win_chance_count += 1 if one_move_away?(possibility, COMPUTER)
+				end
+
+				test_tiles[tile_location] = "-"
+
+				if win_chance_count >= best_win_chance_count
+					@board.winning_possibilities.each do |combo|
+						if combo.include?(tile_location)
+							possibility = build_possibility(combo, test_tiles)
+
+							nearby_x_count += 1 if possibility.include?(HUMAN) && !possibility.include?(COMPUTER)
+						end
+					end
+				end
+
+				if win_chance_count >= 2 && nearby_x_count >= best_nearby_x_count
+					best_win_chance_count = win_chance_count
+					best_nearby_x_count = nearby_x_count
+					best_tile_location = tile_location
+				end
+			end
+		end
+		return (best_tile_location+1) if best_win_chance_count >= 2
 	end
 
 	def look_for_future_opening(letter)
@@ -53,7 +132,6 @@ class ComputerPlayer
 			test_tiles = @board.tiles.dup
 
 			if tile == "-"
-				win_chance_count = 0
 				test_tiles[index] = letter
 
 				@board.winning_possibilities.each do |combo|
@@ -62,11 +140,42 @@ class ComputerPlayer
 					win_chance_count += 1 if one_move_away?(possibility, letter)
 				end
 
-				return (index+1) if win_chance_count > 1
+				return (index+1) if win_chance_count >= 2
 			end
 		end
 		nil
 	end
+
+	# def try_to_future_future_win
+	# 	@board.tiles.chars.each_with_index do |tile1, index1|
+	# 		test_tiles = @board.tiles.dup
+
+	# 		if tile1 == "-"
+	# 			test_tiles[index1] = COMPUTER
+
+	# 			test_tiles.chars.each_with_index do |tile2, index2|
+	# 				test2_tiles = test_tiles.dup
+
+	# 				if tile2 == "-"
+	# 					win_chance_count = 0
+	# 					test2_tiles[index2] = COMPUTER
+
+	# 					@board.winning_possibilities.each do |combo|
+	# 						if combo.include?(index2)
+	# 							possibility = build_possibility(combo, test2_tiles)
+	# 							puts "index1 #{index1} - index2 #{index2} - combo #{combo} - possibility #{possibility}" if one_move_away?(possibility, COMPUTER)
+
+	# 							win_chance_count += 1 if one_move_away?(possibility, COMPUTER)
+	# 						end
+	# 					end
+	# 				return (index1+1) if win_chance_count >= 4
+	# 				end
+	# 			end
+
+	# 		end
+	# 	end
+	# 	nil
+	# end
 
 	def build_possibility(combo, tiles)
 		possibility = []
@@ -214,6 +323,11 @@ class ComputerPlayer
 			end
 		end
 
+		# COMMENT
+		# if best_o_count > 0
+		# 	puts "HOPEFUL"
+		# 	sleep(1.0)
+		# end
 		return best_combo[best_combo_index] + 1 if best_o_count > 0
 	end
 

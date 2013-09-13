@@ -1,7 +1,12 @@
 require 'board'
+require 'spec_helper'
 
 describe Board do
   let(:board) { Board.new(3) }
+
+  def make_moves(board, moves)
+    SpecHelper.make_moves(board, moves)
+  end
 
   it "should have the appropriate number of tiles" do
     board.tiles.length.should == 9
@@ -22,14 +27,16 @@ describe Board do
   end
 
   it "should know if a tile is open" do
-    board.stub(tiles: "---X-O---")
+    make_moves(board, ["---",
+                       "X-O",
+                       "---"])
     board.tile_open?(5).should == true
     board.tile_open?(4).should == false
   end
 
   it "should update a tile for a move" do
     board.update(1, "X")
-    board.tiles.should == 'X--------'
+    board.tiles.should == "X--------"
   end
 
   it "should increment the move-count after a move" do
@@ -46,32 +53,48 @@ describe Board do
   end
 
   it "should know when board is full" do
-    board.stub(tiles: "XOXOXOOXO")
+    make_moves(board, ["XOX",
+                       "OXO",
+                       "OXO"])
     board.full?.should == true
   end
 
   it "should know when there is a winner" do
-    board.stub(tiles: "OXO-X--X-")
+    make_moves(board, ["OXO",
+                       "-X-",
+                       "-X-"])
     board.won?.should == true
-    board.stub(tiles: "OX--X-OX-")
+    board = Board.new(3)
+    make_moves(board, ["OX-",
+                       "-X-",
+                       "OX-"])
     board.won?.should == true
 
   end
 
   it "should know when there is not a winner" do
-    board.stub(tiles: "-X----OXO")
+    make_moves(board, ["-X-",
+                       "---",
+                       "OXO"])
     board.won?.should == false
   end
 
   it "should know when the game is a tie" do
-    board.stub(tiles: "XOXOXOOXO")
+    make_moves(board, ["XOX",
+                       "OXO",
+                       "OXO"])
     board.tied?.should == true
-    board.stub(tiles: "OXOXOXXOX")
+    board = Board.new(3)
+    make_moves(board, ["OXO",
+                       "XOX",
+                       "XOX"])
     board.tied?.should == true
   end
 
   it "should know when a game is not a tie" do
-    board.stub(tiles: "XOOXOXXXO")
+    make_moves(board, ["XOO",
+                       "XOX",
+                       "XXO"])
     board.tied?.should == false
   end
 
@@ -119,10 +142,15 @@ describe Board do
   end
 
   it "should know when a cat's game is inevitable" do
-    board.stub(tiles: "---X-O---")
+    make_moves(board, ["---",
+                       "X-O",
+                       "---"])
     board.future_cats_game?.should == false
     board = Board.new(4)
-    board.stub(tiles: "XXXO-OX-XOOXOOXO")
+    make_moves(board, ["XXXO",
+                       "-OX-",
+                       "XOOX",
+                       "OOXO"])
     board.future_cats_game?.should == true
   end
 end
