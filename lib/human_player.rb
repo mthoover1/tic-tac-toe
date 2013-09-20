@@ -15,5 +15,4 @@ class HumanPlayer
 		end
 		@board.update(move, @symbol)
 	end
-
 end
