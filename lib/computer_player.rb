@@ -1,31 +1,38 @@
 class ComputerPlayer
-	attr_reader :board
+	attr_reader :board, :symbol
 
-	HUMAN = "X"
-	COMPUTER = "O"
-
-	def initialize(board)
+	def initialize(board, symbol = "O")
 		@board = board
+		@symbol = symbol
+		@opponent_symbol = set_opponent_symbol
+	end
+
+	def set_opponent_symbol
+		@symbol == "X" ? @opponent_symbol = "O" : @opponent_symbol = "X"
 	end
 
 	def move
-		try_to_win ||
-		try_to_block ||
-		strategic_move ||
-		try_to_future_win ||
-		try_to_future_block ||
-		# try_to_future_future_win ||
-		hopeful_move ||
-		center_move ||
-		random_move
+		Kernel.sleep(0.5) if @board.move_count > 0
+
+		move = try_to_win ||
+					 try_to_block ||
+					 strategic_move ||
+					 try_to_future_win ||
+					 try_to_future_block ||
+					 # try_to_future_future_win ||
+					 hopeful_move ||
+					 center_move ||
+					 random_move
+
+		@board.update(move, @symbol)
 	end
 
 	def try_to_win
-		look_for_opening(COMPUTER)
+		look_for_opening(symbol)
 	end
 
 	def try_to_block
-		look_for_opening(HUMAN)
+		look_for_opening(@opponent_symbol)
 	end
 
 	def look_for_opening(letter)
@@ -41,7 +48,7 @@ class ComputerPlayer
 	end
 
 	def try_to_future_block
-		# look_for_future_opening(HUMAN)
+		# look_for_future_opening(@opponent_symbol)
 		best_tile_location = nil
 		best_win_chance_count = 0
 		best_nearby_o_count = 0
@@ -53,12 +60,12 @@ class ComputerPlayer
 				win_chance_count = 0
 				nearby_o_count = 0
 
-				test_tiles[tile_location] = HUMAN
+				test_tiles[tile_location] = @opponent_symbol
 
 				@board.winning_possibilities.each do |combo|
 					possibility = build_possibility(combo, test_tiles)
 
-					win_chance_count += 1 if one_move_away?(possibility, HUMAN)
+					win_chance_count += 1 if one_move_away?(possibility, @opponent_symbol)
 				end
 
 				test_tiles[tile_location] = "-"
@@ -68,7 +75,7 @@ class ComputerPlayer
 						if combo.include?(tile_location)
 							possibility = build_possibility(combo, test_tiles)
 
-							nearby_o_count += 1 if possibility.include?(COMPUTER) && !possibility.include?(HUMAN)
+							nearby_o_count += 1 if possibility.include?(symbol) && !possibility.include?(@opponent_symbol)
 						end
 					end
 				end
@@ -84,7 +91,7 @@ class ComputerPlayer
 	end
 
 	def try_to_future_win(tiles = @board.tiles)
-		# look_for_future_opening(COMPUTER)
+		# look_for_future_opening(symbol)
 
 		best_tile_location = nil
 		best_win_chance_count = 0
@@ -97,12 +104,12 @@ class ComputerPlayer
 				win_chance_count = 0
 				nearby_x_count = 0
 
-				test_tiles[tile_location] = COMPUTER
+				test_tiles[tile_location] = symbol
 
 				@board.winning_possibilities.each do |combo|
 					possibility = build_possibility(combo, test_tiles)
 
-					win_chance_count += 1 if one_move_away?(possibility, COMPUTER)
+					win_chance_count += 1 if one_move_away?(possibility, symbol)
 				end
 
 				test_tiles[tile_location] = "-"
@@ -112,7 +119,7 @@ class ComputerPlayer
 						if combo.include?(tile_location)
 							possibility = build_possibility(combo, test_tiles)
 
-							nearby_x_count += 1 if possibility.include?(HUMAN) && !possibility.include?(COMPUTER)
+							nearby_x_count += 1 if possibility.include?(@opponent_symbol) && !possibility.include?(symbol)
 						end
 					end
 				end
@@ -151,21 +158,21 @@ class ComputerPlayer
 	# 		test_tiles = @board.tiles.dup
 
 	# 		if tile1 == "-"
-	# 			test_tiles[index1] = COMPUTER
+	# 			test_tiles[index1] = symbol
 
 	# 			test_tiles.chars.each_with_index do |tile2, index2|
 	# 				test2_tiles = test_tiles.dup
 
 	# 				if tile2 == "-"
 	# 					win_chance_count = 0
-	# 					test2_tiles[index2] = COMPUTER
+	# 					test2_tiles[index2] = symbol
 
 	# 					@board.winning_possibilities.each do |combo|
 	# 						if combo.include?(index2)
 	# 							possibility = build_possibility(combo, test2_tiles)
-	# 							puts "index1 #{index1} - index2 #{index2} - combo #{combo} - possibility #{possibility}" if one_move_away?(possibility, COMPUTER)
+	# 							puts "index1 #{index1} - index2 #{index2} - combo #{combo} - possibility #{possibility}" if one_move_away?(possibility, symbol)
 
-	# 							win_chance_count += 1 if one_move_away?(possibility, COMPUTER)
+	# 							win_chance_count += 1 if one_move_away?(possibility, symbol)
 	# 						end
 	# 					end
 	# 				return (index1+1) if win_chance_count >= 4
@@ -208,67 +215,67 @@ class ComputerPlayer
 
 	def three_by_three_after_two_moves
 		tiles = @board.tiles
-		if tiles[1] == HUMAN     # HUMAN PLAYS EDGE
+		if tiles[1] == @opponent_symbol     # OPPONENT PLAYS EDGE
 			return [7,9].sample
-		elsif tiles[3] == HUMAN
+		elsif tiles[3] == @opponent_symbol
 			return [3,9].sample
-		elsif tiles[5] == HUMAN
+		elsif tiles[5] == @opponent_symbol
 			return [1,7].sample
-		elsif tiles[7] == HUMAN
+		elsif tiles[7] == @opponent_symbol
 			return [1,3].sample
-		elsif tiles[0] == HUMAN  # HUMAN PLAYS CORNER
+		elsif tiles[0] == @opponent_symbol  # OPPONENT PLAYS CORNER
 			return 9
-		elsif tiles[2] == HUMAN
+		elsif tiles[2] == @opponent_symbol
 			return 7
-		elsif tiles[6] == HUMAN
+		elsif tiles[6] == @opponent_symbol
 			return 3
-		elsif tiles[8] == HUMAN
+		elsif tiles[8] == @opponent_symbol
 			return 1
 		end
 	end
 
 	def three_by_three_after_three_moves
 		tiles = @board.tiles
-		if tiles[4] == HUMAN && tiles[8] == HUMAN
+		if tiles[4] == @opponent_symbol && tiles[8] == @opponent_symbol
 			return [3,7].sample
-		elsif (tiles[0] == HUMAN && tiles[8] == HUMAN) || (tiles[2] == HUMAN && tiles[6] == HUMAN)
+		elsif (tiles[0] == @opponent_symbol && tiles[8] == @opponent_symbol) || (tiles[2] == @opponent_symbol && tiles[6] == @opponent_symbol)
 			return [1,3,5,7].sample + 1
-		elsif tiles[3] == HUMAN && tiles[2] == HUMAN # HUMAN PLAYS EDGE AND A FAR CORNER (computer plays corner in between)
+		elsif tiles[3] == @opponent_symbol && tiles[2] == @opponent_symbol # OPPONENT PLAYS EDGE AND A FAR CORNER (computer plays corner in between)
 			return 1
-		elsif tiles[3] == HUMAN && tiles[8] == HUMAN
+		elsif tiles[3] == @opponent_symbol && tiles[8] == @opponent_symbol
 			return 7
-		elsif tiles[1] == HUMAN && tiles[6] == HUMAN
+		elsif tiles[1] == @opponent_symbol && tiles[6] == @opponent_symbol
 			return 1
-		elsif tiles[1] == HUMAN && tiles[8] == HUMAN
+		elsif tiles[1] == @opponent_symbol && tiles[8] == @opponent_symbol
 			return 3
-		elsif tiles[5] == HUMAN && tiles[0] == HUMAN
+		elsif tiles[5] == @opponent_symbol && tiles[0] == @opponent_symbol
 			return 3
-		elsif tiles[5] == HUMAN && tiles[6] == HUMAN
+		elsif tiles[5] == @opponent_symbol && tiles[6] == @opponent_symbol
 			return 9
-		elsif tiles[7] == HUMAN && tiles[0] == HUMAN
+		elsif tiles[7] == @opponent_symbol && tiles[0] == @opponent_symbol
 			return 7
-		elsif tiles[7] == HUMAN && tiles[2] == HUMAN
+		elsif tiles[7] == @opponent_symbol && tiles[2] == @opponent_symbol
 			return 9
 		end
 	end
 
 	def three_by_three_after_four_moves
 		tiles = @board.tiles
-		if tiles[0] == HUMAN && tiles[5] == HUMAN
+		if tiles[0] == @opponent_symbol && tiles[5] == @opponent_symbol
 			return 7
-		elsif tiles[0] == HUMAN && tiles[7] == HUMAN
+		elsif tiles[0] == @opponent_symbol && tiles[7] == @opponent_symbol
 			return 3
-		elsif tiles[2] == HUMAN && tiles[3] == HUMAN
+		elsif tiles[2] == @opponent_symbol && tiles[3] == @opponent_symbol
 			return 9
-		elsif tiles[2] == HUMAN && tiles[7] == HUMAN
+		elsif tiles[2] == @opponent_symbol && tiles[7] == @opponent_symbol
 			return 1
-		elsif tiles[6] == HUMAN && tiles[5] == HUMAN
+		elsif tiles[6] == @opponent_symbol && tiles[5] == @opponent_symbol
 			return 1
-		elsif tiles[6] == HUMAN && tiles[1] == HUMAN
+		elsif tiles[6] == @opponent_symbol && tiles[1] == @opponent_symbol
 			return 9
-		elsif tiles[8] == HUMAN && tiles[1] == HUMAN
+		elsif tiles[8] == @opponent_symbol && tiles[1] == @opponent_symbol
 			return 7
-		elsif tiles[8] == HUMAN && tiles[3] == HUMAN
+		elsif tiles[8] == @opponent_symbol && tiles[3] == @opponent_symbol
 			return 3
 		end
 	end
@@ -299,18 +306,18 @@ class ComputerPlayer
 		best_combo = []
 		best_combo_index = 0
 
-		@board.winning_possibilities.shuffle.each do |combo|  # PUT COMPUTER IN A POSSIBLE WINNING ROW
+		@board.winning_possibilities.shuffle.each do |combo|  # PUT symbol IN A POSSIBLE WINNING ROW
 			combo = combo.reverse if [0,1].sample == 1
 			possibility = build_possibility(combo, @board.tiles)
 
-			if possibility.include?(COMPUTER) && possibility.include?("-") && !possibility.include?(HUMAN)
-				o_count = possibility.count(COMPUTER)
+			if possibility.include?(symbol) && possibility.include?("-") && !possibility.include?(@opponent_symbol)
+				o_count = possibility.count(symbol)
 
 				if o_count > best_o_count
 					best_o_count = o_count
 					best_combo = combo
 
-					o_index = possibility.index(COMPUTER)
+					o_index = possibility.index(symbol)
 
 					if possibility[o_index+1] == "-"
 						best_combo_index = o_index+1

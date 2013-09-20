@@ -1,13 +1,10 @@
 require 'game_controller'
-require	'interface'
-require 'board'
-require 'computer_player'
 
 describe GameController do
 	let(:board) { Board.new(3) }
 	let(:interface) { Interface.new }
 	let(:computer) { ComputerPlayer.new(board) }
-	let(:game) { GameController.new(interface, board, computer) }
+	let(:game) { GameController.new(interface, board) }
 
 	before(:each) do
 		interface.stub(gets: "3\n")
@@ -29,11 +26,8 @@ describe GameController do
 	end
 
 	it "should randomly choose who gets the first move" do
-		["X","O"].should include(game.coin_toss)
-	end
-
-	it "should execute a coin toss to determine 'next move' upon game creation" do
-		["X","O"].should include(game.next_player)
+		game.coin_toss
+		[HumanPlayer,ComputerPlayer].should include(game.player1.class)
 	end
 
 	it "should show the board" do
@@ -42,28 +36,16 @@ describe GameController do
 		game.play
 	end
 
-	it "should execute a computer move when computer has 'next move'" do
-		game.instance_variable_set(:@next_player, "O")
-		game.should_receive(:computer_move)
-		game.move
-	end
-
-	it "should execute a human move when human has 'next move'" do
-		game.instance_variable_set(:@next_player, "X")
-		game.should_receive(:human_move)
-		game.move
-	end
-
 	it "should update the 'next player' after a human move" do
-		game.instance_variable_set(:@next_player, "X")
+		game.instance_variable_set(:@next_player, game.player1)
 		game.update_next_player
-		game.instance_variable_get(:@next_player).should == "O"
+		game.instance_variable_get(:@next_player).should == game.player2
 	end
 
 	it "should update the 'next player' after a computer move" do
-		game.instance_variable_set(:@next_player, "O")
+		game.instance_variable_set(:@next_player, game.player2)
 		game.update_next_player
-		game.instance_variable_get(:@next_player).should == "X"
+		game.instance_variable_get(:@next_player).should == game.player1
 	end
 
 	it "should not make a move if game is won" do

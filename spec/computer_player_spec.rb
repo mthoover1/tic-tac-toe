@@ -1,10 +1,13 @@
 require 'computer_player'
-require 'board'
 require 'spec_helper'
 
 describe ComputerPlayer do
   let(:board) { Board.new(3) }
   let(:computer) { ComputerPlayer.new(board) }
+
+  before do
+    Kernel.stub(:sleep)
+  end
 
   def make_moves(board, moves)
     SpecHelper.make_moves(board, moves)
@@ -49,38 +52,44 @@ describe ComputerPlayer do
     make_moves(board, ["XXO",
                        "X--",
                        "O--"]) #win
-    computer.move.should == 5
+    board.should_receive(:update).with(5, "O")
+    computer.move
     board = Board.new(3)
     computer = ComputerPlayer.new(board)
     make_moves(board, ["-X-",
                        "-XO",
                        "---"]) #block
-    computer.move.should == 8
+    board.should_receive(:update).with(8, "O")
+    computer.move
     board = Board.new(3)
     computer = ComputerPlayer.new(board)
     make_moves(board, ["X--",
                        "-O-",
                        "---"]) #strategic
-    computer.move.should == 9
+    board.should_receive(:update).with(9, "O")
+    computer.move
     board = Board.new(3)
     computer = ComputerPlayer.new(board)
     make_moves(board, ["X--",
                        "-OX",
                        "-XO"]) #hopeful
-    [3,7].should include(computer.move)
+    computer.move
+    ["X-O-OX-XO","X---OXOXO"].should include(board.tiles)
     board = Board.new(3)
     computer = ComputerPlayer.new(board)
     make_moves(board, ["---",
                        "---",
                        "---"]) #center
-    computer.move.should == 5
+    board.should_receive(:update).with(5, "O")
+    computer.move
     big_board = Board.new(4)                      #future block on 4x4
     big_computer = ComputerPlayer.new(big_board)
     make_moves(big_board, ["--XX",
                            "----",
                            "X---",
                            "XOOO"])
-    big_computer.move.should == 1
+    big_board.should_receive(:update).with(1, "O")
+    big_computer.move
   end
 
 
@@ -318,5 +327,29 @@ describe ComputerPlayer do
   it "should know when a possibility is one move away from completion" do
     computer.one_move_away?(["X","X","-"],"X").should == true
     computer.one_move_away?(["X","X","-"],"O").should == false
+  end
+
+  it "should never lose in a computer vs computer battle on 3x3" do
+    100.times do
+      board = Board.new(3)
+      interface = Interface.new
+      game = GameController.new(interface, board, ComputerPlayer.new(board, "X"), ComputerPlayer.new(board))
+      game.stub(:puts)
+      game.stub(:coin_toss)
+      game.play
+      interface.display_results(board, "X", "O").should start_with("Cat")
+    end
+  end
+
+  it "should never lose in a computer vs computer battle on 4x4" do
+    100.times do
+      board = Board.new(4)
+      interface = Interface.new
+      game = GameController.new(interface, board, ComputerPlayer.new(board, "X"), ComputerPlayer.new(board))
+      game.stub(:puts)
+      game.stub(:coin_toss)
+      game.play
+      interface.display_results(board, "X", "O").should start_with("Cat")
+    end
   end
 end

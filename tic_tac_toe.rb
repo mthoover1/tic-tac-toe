@@ -1,6 +1,7 @@
 require './lib/interface'
 require './lib/board'
 require './lib/computer_player'
+require './lib/human_player'
 require './lib/game_controller'
 
 interface = Interface.new

@@ -26,19 +26,19 @@ describe Interface do
     interface.display_results(board, "X", "O").should == "Cat's Game"
   end
 
-  it "should display results of an inevitiable cat's game" do
+  it "should display results of an inevitable cat's game" do
     board = double("board", tied?: false, won?: false, future_cats_game?: true)
     interface.display_results(board, "X", "O").should == "Cat's Game (Saving You Time)"
   end
 
   it "should display results of a human win" do
     board = double("board", won?: true, tied?: false, future_cats_game?: false, last_player: "X")
-    interface.display_results(board, "X", "O").should == "Human Wins!!"
+    interface.display_results(board, "X", "O").should == "Player 1 (X) Wins!!"
   end
 
   it "should display results of a computer win" do
     board = double("board", won?: true, tied?: false, future_cats_game?: false, last_player: "O")
-    interface.display_results(board, "X", "O").should == "Computer Wins"
+    interface.display_results(board, "X", "O").should == "Player 2 (O) Wins!!"
   end
 
   it "should prompt user for game board size choice" do

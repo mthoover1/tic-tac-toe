@@ -1,8 +1,8 @@
 class Board
-  attr_reader :tiles, :move_count, :last_player, :size, :winning_possibilities, :corner_tile_numbers, :win_length
+  attr_accessor :tiles, :move_count, :last_player, :size, :winning_possibilities, :corner_tile_numbers, :win_length
 
-  PLAYER1 = "X"
-  PLAYER2 = "O"
+  SYMBOL1 = "X"
+  SYMBOL2 = "O"
 
   def initialize(size)
     @size = size
@@ -132,6 +132,10 @@ class Board
     tiles[tile_number - 1] = player
     @move_count += 1
     @last_player = player
+  end
+
+  def count_moves
+    @tiles.count("^-")
   end
 
   def future_cats_game?

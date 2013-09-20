@@ -1,32 +1,30 @@
 class GameController
-	attr_reader :next_player, :board, :computer
+	attr_reader :next_player, :board, :computer, :player1, :player2
 
-	HUMAN = "X"
-	COMPUTER = "O"
+	SYMBOL1 = "X"
+	SYMBOL2 = "O"
 
-	def initialize(interface, board = nil, computer = nil)
+	def initialize(interface, board = nil, player1 = nil, player2 = nil)
 		@interface = interface
 		@board = board
-		@computer = computer
-		@next_player = coin_toss
-		@player1 = nil
-		@player2 = nil
-		# @next_player = @player1
+		@player1 = player1
+		@player2 = player2
+		@next_player = @player1
 	end
 
 	def play
 		create_board if @board == nil
-		create_computer_player if @computer == nil
+		coin_toss
 
 		show_board
 
 		until @board.won? || @board.tied? || @board.future_cats_game?
-			move
+			@next_player.move
 			update_next_player
 			show_board
 		end
 
-		puts @interface.display_results(@board, HUMAN, COMPUTER)
+		puts @interface.display_results(@board, SYMBOL1, SYMBOL2)
 	end
 
 	def create_board
@@ -42,7 +40,20 @@ class GameController
 	end
 
 	def coin_toss
-		[HUMAN,COMPUTER].sample
+		coin = ["heads","tails"].sample
+
+		if coin == "heads"
+			@player1 = HumanPlayer.new(@board, SYMBOL1, @interface)
+			@player2 = ComputerPlayer.new(@board, SYMBOL2)
+		else
+			@player1 = ComputerPlayer.new(@board, SYMBOL1)
+			@player2 = HumanPlayer.new(@board, SYMBOL2, @interface)
+		end
+
+		# @player1 = ComputerPlayer.new(@board, SYMBOL1)
+		# @player2 = ComputerPlayer.new(@board, SYMBOL2)
+
+		@next_player = @player1
 	end
 
 	def show_board
@@ -51,26 +62,7 @@ class GameController
 		puts @board
 	end
 
-	def move
-		human_move if @next_player == HUMAN
-		computer_move if @next_player == COMPUTER
-	end
-
-	def human_move
-		move = 0
-		until @board.tile_open?(move)
-			puts @interface.prompt_human
-			move = @interface.get_input
-		end
-		@board.update(move, HUMAN)
-	end
-
-	def computer_move
-		sleep(0.5) if @board.move_count > 0
-		@board.update(@computer.move, COMPUTER)
-	end
-
 	def update_next_player
-		@next_player == COMPUTER ? @next_player = HUMAN : @next_player = COMPUTER
+		@next_player == @player1 ? @next_player = @player2 : @next_player = @player1
 	end
 end

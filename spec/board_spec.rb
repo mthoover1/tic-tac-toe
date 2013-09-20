@@ -26,6 +26,14 @@ describe Board do
     Board.new(4).to_s.should == "- - - -\n- - - -\n- - - -\n- - - -\n\n"
   end
 
+  it "should be able to count the number of moves on a given board" do
+    board.count_moves.should == 0
+    make_moves(board, ["---",
+                       "X-O",
+                       "---"])
+    board.count_moves.should == 2
+  end
+
   it "should know if a tile is open" do
     make_moves(board, ["---",
                        "X-O",
