@@ -1,7 +1,7 @@
 Tic Tac Toe
 ===========
 
-Ruby Tic Tac Toe app with a focus on test-driven-development.
+Ruby Tic Tac Toe gem.  Contains the board and computer player's logic.  Combine this gem with an interface and steps for playing the game.
 
 Prerequisites
 -----
@@ -9,17 +9,7 @@ Prerequisites
 
 Setup
 -----
-- Clone
-
-Play
------
-'ruby tic_tac_toe.rb'
-
-Instructions
------
-- Enter board size ("3" would mean a 3x3 board)
-- Human is "X", computer is "O"
-- Refer to numbered diagram above empty board for tile numbers before moves
+- In your project's gemfile: gem 'tic_tac_toe', :git => 'https://github.com/mthoover1/tic-tac-toe.git'
 
 Running Specs
 -----
