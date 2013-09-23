@@ -7,7 +7,6 @@ Gem::Specification.new do |s|
   s.authors     = ["Matt Hoover"]
   s.email       = 'mhoover@ncsasports.org'
   s.files       = ["lib/tic_tac_toe.rb", "lib/board.rb", "lib/computer_player.rb"]
-  s.homepage    =
-    'http://rubygems.org/gems'
-  s.license       = 'MIT'
+  s.homepage    = 'http://rubygems.org/gems'
+  s.license     = 'MIT'
 end
