@@ -330,11 +330,6 @@ class ComputerPlayer
 			end
 		end
 
-		# COMMENT
-		# if best_o_count > 0
-		# 	puts "HOPEFUL"
-		# 	sleep(1.0)
-		# end
 		return best_combo[best_combo_index] + 1 if best_o_count > 0
 	end
 
