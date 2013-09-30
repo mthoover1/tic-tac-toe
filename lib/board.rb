@@ -138,6 +138,10 @@ class Board
     @tiles.count("^-")
   end
 
+  def game_over?
+    won? || tied? || future_cats_game?
+  end
+
   def future_cats_game?
     @winning_possibilities.each do |combo|
       possibility = []

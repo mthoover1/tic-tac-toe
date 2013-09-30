@@ -106,6 +106,25 @@ describe Board do
     board.tied?.should == false
   end
 
+  it "should know when the game is over" do
+    make_moves(board, ["---",
+                       "XO-",
+                       "---"])
+    board.game_over?.should == false
+    make_moves(board, ["XXX",
+                       "O--",
+                       "O--"])
+    board.game_over?.should == true
+    make_moves(board, ["OOX",
+                       "XXO",
+                       "OX-"])
+    board.game_over?.should == true
+    make_moves(board, ["OOX",
+                       "XXO",
+                       "OXX"])
+    board.game_over?.should == true
+  end
+
   it "should build the board depending on size" do
     board.generate_blank_tiles(3).should == "---------"
     board.generate_blank_tiles(4).should == "----------------"
