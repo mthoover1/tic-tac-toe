@@ -12,8 +12,6 @@ class ComputerPlayer
 	end
 
 	def move
-		Kernel.sleep(0.5) if @board.move_count > 0
-
 		move = try_to_win ||
 					 try_to_block ||
 					 strategic_move ||
