@@ -17,7 +17,6 @@ class ComputerPlayer
 					 strategic_move ||
 					 try_to_setup_win_on_next_move ||
 					 try_to_block_move_that_leads_to_loss ||
-					 # try_to_future_future_win ||
 					 hopeful_move ||
 					 center_move ||
 					 random_move
@@ -46,7 +45,6 @@ class ComputerPlayer
 	end
 
 	def try_to_block_move_that_leads_to_loss
-		# look_for_future_opening(@opponent_symbol)
 		best_tile_location = nil
 		best_win_chance_count = 0
 		best_nearby_o_count = 0
@@ -89,8 +87,6 @@ class ComputerPlayer
 	end
 
 	def try_to_setup_win_on_next_move(tiles = @board.tiles)
-		# look_for_future_opening(symbol)
-
 		best_tile_location = nil
 		best_win_chance_count = 0
 		best_nearby_x_count = 0
@@ -150,37 +146,6 @@ class ComputerPlayer
 		end
 		nil
 	end
-
-	# def try_to_future_future_win
-	# 	@board.tiles.chars.each_with_index do |tile1, index1|
-	# 		test_tiles = @board.tiles.dup
-
-	# 		if tile1 == "-"
-	# 			test_tiles[index1] = symbol
-
-	# 			test_tiles.chars.each_with_index do |tile2, index2|
-	# 				test2_tiles = test_tiles.dup
-
-	# 				if tile2 == "-"
-	# 					win_chance_count = 0
-	# 					test2_tiles[index2] = symbol
-
-	# 					@board.winning_possibilities.each do |combo|
-	# 						if combo.include?(index2)
-	# 							possibility = build_possibility(combo, test2_tiles)
-	# 							puts "index1 #{index1} - index2 #{index2} - combo #{combo} - possibility #{possibility}" if one_move_away?(possibility, symbol)
-
-	# 							win_chance_count += 1 if one_move_away?(possibility, symbol)
-	# 						end
-	# 					end
-	# 				return (index1+1) if win_chance_count >= 4
-	# 				end
-	# 			end
-
-	# 		end
-	# 	end
-	# 	nil
-	# end
 
 	def build_possibility(combo, tiles)
 		possibility = []
