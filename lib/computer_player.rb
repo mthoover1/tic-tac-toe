@@ -17,8 +17,8 @@ class ComputerPlayer
 		move = try_to_win ||
 					 try_to_block ||
 					 strategic_move ||
-					 try_to_future_win ||
-					 try_to_future_block ||
+					 try_to_setup_win_on_next_move ||
+					 try_to_block_move_that_leads_to_loss ||
 					 # try_to_future_future_win ||
 					 hopeful_move ||
 					 center_move ||
@@ -47,7 +47,7 @@ class ComputerPlayer
 		nil
 	end
 
-	def try_to_future_block
+	def try_to_block_move_that_leads_to_loss
 		# look_for_future_opening(@opponent_symbol)
 		best_tile_location = nil
 		best_win_chance_count = 0
@@ -90,7 +90,7 @@ class ComputerPlayer
 		return (best_tile_location+1) if best_win_chance_count >= 2
 	end
 
-	def try_to_future_win(tiles = @board.tiles)
+	def try_to_setup_win_on_next_move(tiles = @board.tiles)
 		# look_for_future_opening(symbol)
 
 		best_tile_location = nil
