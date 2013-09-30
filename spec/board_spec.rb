@@ -43,20 +43,20 @@ describe Board do
   end
 
   it "should update a tile for a move" do
-    board.update(1, "X")
+    board.update_tile(1, "X")
     board.tiles.should == "X--------"
   end
 
   it "should increment the move-count after a move" do
-    board.update(1, "X")
-    board.update(2, "O")
+    board.update_tile(1, "X")
+    board.update_tile(2, "O")
     board.move_count.should == 2
   end
 
   it "should update the last-player after a move" do
-    board.update(1, "X")
+    board.update_tile(1, "X")
     board.last_player.should == "X"
-    board.update(2, "O")
+    board.update_tile(2, "O")
     board.last_player.should == "O"
   end
 
@@ -107,8 +107,8 @@ describe Board do
   end
 
   it "should build the board depending on size" do
-    board.build_board(3).should == "---------"
-    board.build_board(4).should == "----------------"
+    board.generate_blank_tiles(3).should == "---------"
+    board.generate_blank_tiles(4).should == "----------------"
   end
 
 

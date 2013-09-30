@@ -6,7 +6,7 @@ class Board
 
   def initialize(size)
     @size = size
-    @tiles = build_board(size)
+    @tiles = generate_blank_tiles(size)
     @win_length = generate_win_length(size)
     @last_player = ""
     @move_count = 0
@@ -14,7 +14,7 @@ class Board
     @corner_tile_numbers = generate_corner_tile_numbers(size)
   end
 
-  def build_board(size)
+  def generate_blank_tiles(size)
     "-"*(size**2)
   end
 
@@ -128,7 +128,7 @@ class Board
     tiles[tile_number - 1] == "-" if tile_number >= 1
   end
 
-  def update(tile_number, player)
+  def update_tile(tile_number, player)
     tiles[tile_number - 1] = player
     @move_count += 1
     @last_player = player

@@ -24,7 +24,7 @@ class ComputerPlayer
 					 center_move ||
 					 random_move
 
-		@board.update(move, @symbol)
+		@board.update_tile(move, @symbol)
 	end
 
 	def try_to_win

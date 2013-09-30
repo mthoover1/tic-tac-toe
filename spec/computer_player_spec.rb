@@ -53,21 +53,21 @@ describe ComputerPlayer do
     make_moves(board, ["XXO",
                        "X--",
                        "O--"]) #win
-    board.should_receive(:update).with(5, "O")
+    board.should_receive(:update_tile).with(5, "O")
     computer.move
     board = Board.new(3)
     computer = ComputerPlayer.new(board)
     make_moves(board, ["-X-",
                        "-XO",
                        "---"]) #block
-    board.should_receive(:update).with(8, "O")
+    board.should_receive(:update_tile).with(8, "O")
     computer.move
     board = Board.new(3)
     computer = ComputerPlayer.new(board)
     make_moves(board, ["X--",
                        "-O-",
                        "---"]) #strategic
-    board.should_receive(:update).with(9, "O")
+    board.should_receive(:update_tile).with(9, "O")
     computer.move
     board = Board.new(3)
     computer = ComputerPlayer.new(board)
@@ -81,7 +81,7 @@ describe ComputerPlayer do
     make_moves(board, ["---",
                        "---",
                        "---"]) #center
-    board.should_receive(:update).with(5, "O")
+    board.should_receive(:update_tile).with(5, "O")
     computer.move
     big_board = Board.new(4)                      #future block on 4x4
     big_computer = ComputerPlayer.new(big_board)
@@ -89,7 +89,7 @@ describe ComputerPlayer do
                            "----",
                            "X---",
                            "XOOO"])
-    big_board.should_receive(:update).with(1, "O")
+    big_board.should_receive(:update_tile).with(1, "O")
     big_computer.move
   end
 
@@ -298,7 +298,7 @@ describe ComputerPlayer do
                        "-O--",
                        "-O-X",
                        "-O-X"])
-    computer.try_to_future_block.should == 4
+    computer.try_to_block_move_that_leads_to_loss.should == 4
   end
 
   it "should make a move that sets up two winning scenarios" do
@@ -308,7 +308,7 @@ describe ComputerPlayer do
                        "---O",
                        "XX--",
                        "OO--"])
-    computer.try_to_future_win.should == 16
+    computer.try_to_setup_win_on_next_move.should == 16
   end
 
   # it "should make a move that allows another move that sets up two winning scenarios" do
