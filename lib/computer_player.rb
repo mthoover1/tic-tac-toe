@@ -44,24 +44,32 @@ class ComputerPlayer
 		nil
 	end
 
+	def try_to_setup_win_on_next_move
+		look_at_future_scenarios(@symbol, @opponent_symbol)
+	end
+
 	def try_to_block_move_that_leads_to_loss
+		look_at_future_scenarios(@opponent_symbol, @symbol)
+	end
+
+	def look_at_future_scenarios(target_symbol, other_symbol)
 		best_tile_location = nil
 		best_win_chance_count = 0
-		best_nearby_o_count = 0
+		best_nearby_count = 0
 
 		@board.tiles.chars.each_with_index do |tile, tile_location|
 			test_tiles = @board.tiles.dup
 
 			if tile == "-"
 				win_chance_count = 0
-				nearby_o_count = 0
+				nearby_count = 0
 
-				test_tiles[tile_location] = @opponent_symbol
+				test_tiles[tile_location] = target_symbol
 
 				@board.winning_possibilities.each do |combo|
 					possibility = build_possibility(combo, test_tiles)
 
-					win_chance_count += 1 if one_move_away?(possibility, @opponent_symbol)
+					win_chance_count += 1 if one_move_away?(possibility, target_symbol)
 				end
 
 				test_tiles[tile_location] = "-"
@@ -71,80 +79,19 @@ class ComputerPlayer
 						if combo.include?(tile_location)
 							possibility = build_possibility(combo, test_tiles)
 
-							nearby_o_count += 1 if possibility.include?(symbol) && !possibility.include?(@opponent_symbol)
+							nearby_count += 1 if possibility.include?(other_symbol) && !possibility.include?(target_symbol)
 						end
 					end
 				end
 
-				if win_chance_count >= 2 && nearby_o_count >= best_nearby_o_count
+				if win_chance_count >= 2 && nearby_count >= best_nearby_count
 					best_win_chance_count = win_chance_count
-					best_nearby_o_count = nearby_o_count
+					best_nearby_count = nearby_count
 					best_tile_location = tile_location
 				end
 			end
 		end
 		return (best_tile_location+1) if best_win_chance_count >= 2
-	end
-
-	def try_to_setup_win_on_next_move(tiles = @board.tiles)
-		best_tile_location = nil
-		best_win_chance_count = 0
-		best_nearby_x_count = 0
-
-		tiles.chars.each_with_index do |tile, tile_location|
-			test_tiles = tiles.dup
-
-			if tile == "-"
-				win_chance_count = 0
-				nearby_x_count = 0
-
-				test_tiles[tile_location] = symbol
-
-				@board.winning_possibilities.each do |combo|
-					possibility = build_possibility(combo, test_tiles)
-
-					win_chance_count += 1 if one_move_away?(possibility, symbol)
-				end
-
-				test_tiles[tile_location] = "-"
-
-				if win_chance_count >= best_win_chance_count
-					@board.winning_possibilities.each do |combo|
-						if combo.include?(tile_location)
-							possibility = build_possibility(combo, test_tiles)
-
-							nearby_x_count += 1 if possibility.include?(@opponent_symbol) && !possibility.include?(symbol)
-						end
-					end
-				end
-
-				if win_chance_count >= 2 && nearby_x_count >= best_nearby_x_count
-					best_win_chance_count = win_chance_count
-					best_nearby_x_count = nearby_x_count
-					best_tile_location = tile_location
-				end
-			end
-		end
-		return (best_tile_location+1) if best_win_chance_count >= 2
-	end
-
-	def look_for_future_opening(letter)
-		@board.tiles.chars.each_with_index do |tile, index|
-			test_tiles = @board.tiles.dup
-
-			if tile == "-"
-				test_tiles[index] = letter
-
-				@board.winning_possibilities.each do |combo|
-					possibility = build_possibility(combo, test_tiles)
-
-					win_chance_count += 1 if one_move_away?(possibility, letter)
-				end
-
-				return (index+1) if win_chance_count >= 2
-			end
-		end
-		nil
 	end
 
 	def build_possibility(combo, tiles)
