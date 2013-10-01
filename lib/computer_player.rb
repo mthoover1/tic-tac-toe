@@ -25,7 +25,7 @@ class ComputerPlayer
 	end
 
 	def try_to_win
-		look_for_opening(symbol)
+		look_for_opening(@symbol)
 	end
 
 	def try_to_block
