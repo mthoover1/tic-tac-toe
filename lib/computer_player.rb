@@ -120,7 +120,7 @@ class ComputerPlayer
 	end
 
 	def three_by_three_after_one_move
-		return @board.tile_open?(5) ? 5 : 1    #take center if open, else take top-left
+		return center_move || 1
 	end
 
 	def three_by_three_after_two_moves
