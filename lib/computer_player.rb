@@ -1,14 +1,14 @@
 class ComputerPlayer
 	attr_reader :board, :symbol
 
-	def initialize(board, symbol = "O")
+	def initialize(board, symbol = nil)
 		@board = board
-		@symbol = symbol
+		@symbol = symbol || @board.symbol2
 		@opponent_symbol = set_opponent_symbol
 	end
 
 	def set_opponent_symbol
-		@symbol == "X" ? @opponent_symbol = "O" : @opponent_symbol = "X"
+		@symbol == @board.symbol1 ? @opponent_symbol = @board.symbol2 : @opponent_symbol = @board.symbol1
 	end
 
 	def move
@@ -224,23 +224,32 @@ class ComputerPlayer
 
 	def three_by_three_after_four_moves
 		tiles = @board.tiles
-		if tiles[0] == @opponent_symbol && tiles[5] == @opponent_symbol
-			return 7
-		elsif tiles[0] == @opponent_symbol && tiles[7] == @opponent_symbol
-			return 3
-		elsif tiles[2] == @opponent_symbol && tiles[3] == @opponent_symbol
-			return 9
-		elsif tiles[2] == @opponent_symbol && tiles[7] == @opponent_symbol
-			return 1
-		elsif tiles[6] == @opponent_symbol && tiles[5] == @opponent_symbol
-			return 1
-		elsif tiles[6] == @opponent_symbol && tiles[1] == @opponent_symbol
-			return 9
-		elsif tiles[8] == @opponent_symbol && tiles[1] == @opponent_symbol
-			return 7
-		elsif tiles[8] == @opponent_symbol && tiles[3] == @opponent_symbol
-			return 3
+
+		scenarios = [[0,5,7],[0,7,3],[2,3,9],[2,7,1],[6,5,1],[6,1,9],[8,1,7],[8,3,3]]
+
+		scenarios.each do |scenario|
+			if tiles[scenario[0]] == @opponent_symbol && tiles[scenario[1]] == @opponent_symbol
+				return scenario[2]
+			end
 		end
+
+		# if tiles[0] == @opponent_symbol && tiles[5] == @opponent_symbol
+		# 	return 7
+		# elsif tiles[0] == @opponent_symbol && tiles[7] == @opponent_symbol
+		# 	return 3
+		# elsif tiles[2] == @opponent_symbol && tiles[3] == @opponent_symbol
+		# 	return 9
+		# elsif tiles[2] == @opponent_symbol && tiles[7] == @opponent_symbol
+		# 	return 1
+		# elsif tiles[6] == @opponent_symbol && tiles[5] == @opponent_symbol
+		# 	return 1
+		# elsif tiles[6] == @opponent_symbol && tiles[1] == @opponent_symbol
+		# 	return 9
+		# elsif tiles[8] == @opponent_symbol && tiles[1] == @opponent_symbol
+		# 	return 7
+		# elsif tiles[8] == @opponent_symbol && tiles[3] == @opponent_symbol
+		# 	return 3
+		# end
 	end
 
 	def four_by_four_strategic_move

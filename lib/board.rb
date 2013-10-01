@@ -1,12 +1,14 @@
 class Board
-  attr_accessor :tiles, :move_count, :last_player, :size, :winning_possibilities, :corner_tile_numbers, :win_length
+  attr_accessor :tiles, :move_count, :last_player, :size, :winning_possibilities, :corner_tile_numbers, :win_length, :symbol1, :symbol2
 
   SYMBOL1 = "X"
   SYMBOL2 = "O"
 
-  def initialize(size)
+  def initialize(size, symbol1 = SYMBOL1, symbol2 = SYMBOL2)
     @size = size
     @tiles = generate_blank_tiles(size)
+    @symbol1 = symbol1
+    @symbol2 = symbol2
     @win_length = generate_win_length(size)
     @last_player = ""
     @move_count = 0
@@ -31,11 +33,7 @@ class Board
   end
 
   def generate_horizontals(size)
-    if size == 3
-      win_length = 3
-    elsif size >= 4
-      win_length = 4
-    end
+    win_length = generate_win_length(size)
 
     horizontals = []
 
@@ -54,11 +52,7 @@ class Board
   end
 
   def generate_verticals(size)
-    if size == 3
-      win_length = 3
-    elsif size >= 4
-      win_length = 4
-    end
+    win_length = generate_win_length(size)
 
     verticals = []
 
