@@ -45,14 +45,14 @@ class ComputerPlayer
 	end
 
 	def try_to_setup_win_on_next_move
-		look_at_future_scenarios(@symbol, @opponent_symbol)
+		find_move_that_leads_to_end_game(@symbol, @opponent_symbol)
 	end
 
 	def try_to_block_move_that_leads_to_loss
-		look_at_future_scenarios(@opponent_symbol, @symbol)
+		find_move_that_leads_to_end_game(@opponent_symbol, @symbol)
 	end
 
-	def look_at_future_scenarios(target_symbol, other_symbol)
+	def find_move_that_leads_to_end_game(target_symbol, other_symbol)
 		best_tile_location = nil
 		best_win_chance_count = 0
 		best_nearby_count = 0
