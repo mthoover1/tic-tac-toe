@@ -49,7 +49,7 @@ describe ComputerPlayer do
     computer.look_for_opening("O").should == 6
   end
 
-  it "should cycle through different move types" do
+  xit "should cycle through different move types" do
     make_moves(board, ["XXO",
                        "X--",
                        "O--"]) #win
@@ -348,5 +348,20 @@ describe ComputerPlayer do
       game.play
       interface.display_results(board, "X", "O").should start_with("Cat")
     end
+  end
+
+  it "should know when a move is safe (doesn't open up a guaranteed path to victory for opponent)" do
+    make_moves(board, ["X--",
+                       "-O-",
+                       "--X"])
+    computer.is_move_safe?(7).should eq(false)
+    computer.is_move_safe?(8).should eq(true)
+    board = Board.new(3)
+    computer = ComputerPlayer.new(board)
+    make_moves(board, ["XX-",
+                       "-O-",
+                       "---"])
+    computer.is_move_safe?(9).should eq(false)
+    computer.is_move_safe?(3).should eq(true)
   end
 end
