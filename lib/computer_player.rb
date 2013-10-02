@@ -126,119 +126,119 @@ class ComputerPlayer
 		possibility.count("-") == 1 && possibility.include?(letter) && possibility.uniq.length == 2
 	end
 
-	def strategic_move
-		return three_by_three_strategic_move if @board.size == 3
-		return four_by_four_strategic_move	if @board.size == 4
-		return big_board_strategic_move if @board.size > 4 && @board.size.even?
-	end
+	# def strategic_move
+	# 	return three_by_three_strategic_move if @board.size == 3
+	# 	return four_by_four_strategic_move	if @board.size == 4
+	# 	return big_board_strategic_move if @board.size > 4 && @board.size.even?
+	# end
 
-	def three_by_three_strategic_move
-		return three_by_three_after_one_move if @board.move_count == 1
-		return three_by_three_after_two_moves if @board.move_count == 2
-		return three_by_three_after_three_moves if @board.move_count == 3
-		return three_by_three_after_four_moves if @board.move_count == 4
-	end
+	# def three_by_three_strategic_move
+	# 	return three_by_three_after_one_move if @board.move_count == 1
+	# 	return three_by_three_after_two_moves if @board.move_count == 2
+	# 	return three_by_three_after_three_moves if @board.move_count == 3
+	# 	return three_by_three_after_four_moves if @board.move_count == 4
+	# end
 
-	def three_by_three_after_one_move
-		return center_move || 1
-	end
+	# def three_by_three_after_one_move
+	# 	return center_move || 1
+	# end
 
-	def three_by_three_after_two_moves
-		tiles = @board.tiles
-		if tiles[1] == @opponent_symbol     # OPPONENT PLAYS EDGE
-			return [7,9].sample
-		elsif tiles[3] == @opponent_symbol
-			return [3,9].sample
-		elsif tiles[5] == @opponent_symbol
-			return [1,7].sample
-		elsif tiles[7] == @opponent_symbol
-			return [1,3].sample
-		elsif tiles[0] == @opponent_symbol  # OPPONENT PLAYS CORNER
-			return 9
-		elsif tiles[2] == @opponent_symbol
-			return 7
-		elsif tiles[6] == @opponent_symbol
-			return 3
-		elsif tiles[8] == @opponent_symbol
-			return 1
-		end
-	end
+	# def three_by_three_after_two_moves
+	# 	tiles = @board.tiles
+	# 	if tiles[1] == @opponent_symbol     # OPPONENT PLAYS EDGE
+	# 		return [7,9].sample
+	# 	elsif tiles[3] == @opponent_symbol
+	# 		return [3,9].sample
+	# 	elsif tiles[5] == @opponent_symbol
+	# 		return [1,7].sample
+	# 	elsif tiles[7] == @opponent_symbol
+	# 		return [1,3].sample
+	# 	elsif tiles[0] == @opponent_symbol  # OPPONENT PLAYS CORNER
+	# 		return 9
+	# 	elsif tiles[2] == @opponent_symbol
+	# 		return 7
+	# 	elsif tiles[6] == @opponent_symbol
+	# 		return 3
+	# 	elsif tiles[8] == @opponent_symbol
+	# 		return 1
+	# 	end
+	# end
 
-	def three_by_three_after_three_moves
-		tiles = @board.tiles
-		if tiles[4] == @opponent_symbol && tiles[8] == @opponent_symbol
-			return [3,7].sample
-		elsif (tiles[0] == @opponent_symbol && tiles[8] == @opponent_symbol) || (tiles[2] == @opponent_symbol && tiles[6] == @opponent_symbol)
-			return [1,3,5,7].sample + 1
-		elsif tiles[3] == @opponent_symbol && tiles[2] == @opponent_symbol # OPPONENT PLAYS EDGE AND A FAR CORNER (computer plays corner in between)
-			return 1
-		elsif tiles[3] == @opponent_symbol && tiles[8] == @opponent_symbol
-			return 7
-		elsif tiles[1] == @opponent_symbol && tiles[6] == @opponent_symbol
-			return 1
-		elsif tiles[1] == @opponent_symbol && tiles[8] == @opponent_symbol
-			return 3
-		elsif tiles[5] == @opponent_symbol && tiles[0] == @opponent_symbol
-			return 3
-		elsif tiles[5] == @opponent_symbol && tiles[6] == @opponent_symbol
-			return 9
-		elsif tiles[7] == @opponent_symbol && tiles[0] == @opponent_symbol
-			return 7
-		elsif tiles[7] == @opponent_symbol && tiles[2] == @opponent_symbol
-			return 9
-		end
-	end
+	# def three_by_three_after_three_moves
+	# 	tiles = @board.tiles
+	# 	if tiles[4] == @opponent_symbol && tiles[8] == @opponent_symbol
+	# 		return [3,7].sample
+	# 	elsif (tiles[0] == @opponent_symbol && tiles[8] == @opponent_symbol) || (tiles[2] == @opponent_symbol && tiles[6] == @opponent_symbol)
+	# 		return [1,3,5,7].sample + 1
+	# 	elsif tiles[3] == @opponent_symbol && tiles[2] == @opponent_symbol # OPPONENT PLAYS EDGE AND A FAR CORNER (computer plays corner in between)
+	# 		return 1
+	# 	elsif tiles[3] == @opponent_symbol && tiles[8] == @opponent_symbol
+	# 		return 7
+	# 	elsif tiles[1] == @opponent_symbol && tiles[6] == @opponent_symbol
+	# 		return 1
+	# 	elsif tiles[1] == @opponent_symbol && tiles[8] == @opponent_symbol
+	# 		return 3
+	# 	elsif tiles[5] == @opponent_symbol && tiles[0] == @opponent_symbol
+	# 		return 3
+	# 	elsif tiles[5] == @opponent_symbol && tiles[6] == @opponent_symbol
+	# 		return 9
+	# 	elsif tiles[7] == @opponent_symbol && tiles[0] == @opponent_symbol
+	# 		return 7
+	# 	elsif tiles[7] == @opponent_symbol && tiles[2] == @opponent_symbol
+	# 		return 9
+	# 	end
+	# end
 
-	def three_by_three_after_four_moves
-		tiles = @board.tiles
+	# def three_by_three_after_four_moves
+	# 	tiles = @board.tiles
 
-		scenarios = [[0,5,7],[0,7,3],[2,3,9],[2,7,1],[6,5,1],[6,1,9],[8,1,7],[8,3,3]]
+	# 	scenarios = [[0,5,7],[0,7,3],[2,3,9],[2,7,1],[6,5,1],[6,1,9],[8,1,7],[8,3,3]]
 
-		scenarios.each do |scenario|
-			if tiles[scenario[0]] == @opponent_symbol && tiles[scenario[1]] == @opponent_symbol
-				return scenario[2]
-			end
-		end
+	# 	scenarios.each do |scenario|
+	# 		if tiles[scenario[0]] == @opponent_symbol && tiles[scenario[1]] == @opponent_symbol
+	# 			return scenario[2]
+	# 		end
+	# 	end
 
-		# if tiles[0] == @opponent_symbol && tiles[5] == @opponent_symbol
-		# 	return 7
-		# elsif tiles[0] == @opponent_symbol && tiles[7] == @opponent_symbol
-		# 	return 3
-		# elsif tiles[2] == @opponent_symbol && tiles[3] == @opponent_symbol
-		# 	return 9
-		# elsif tiles[2] == @opponent_symbol && tiles[7] == @opponent_symbol
-		# 	return 1
-		# elsif tiles[6] == @opponent_symbol && tiles[5] == @opponent_symbol
-		# 	return 1
-		# elsif tiles[6] == @opponent_symbol && tiles[1] == @opponent_symbol
-		# 	return 9
-		# elsif tiles[8] == @opponent_symbol && tiles[1] == @opponent_symbol
-		# 	return 7
-		# elsif tiles[8] == @opponent_symbol && tiles[3] == @opponent_symbol
-		# 	return 3
-		# end
-	end
+	# 	# if tiles[0] == @opponent_symbol && tiles[5] == @opponent_symbol
+	# 	# 	return 7
+	# 	# elsif tiles[0] == @opponent_symbol && tiles[7] == @opponent_symbol
+	# 	# 	return 3
+	# 	# elsif tiles[2] == @opponent_symbol && tiles[3] == @opponent_symbol
+	# 	# 	return 9
+	# 	# elsif tiles[2] == @opponent_symbol && tiles[7] == @opponent_symbol
+	# 	# 	return 1
+	# 	# elsif tiles[6] == @opponent_symbol && tiles[5] == @opponent_symbol
+	# 	# 	return 1
+	# 	# elsif tiles[6] == @opponent_symbol && tiles[1] == @opponent_symbol
+	# 	# 	return 9
+	# 	# elsif tiles[8] == @opponent_symbol && tiles[1] == @opponent_symbol
+	# 	# 	return 7
+	# 	# elsif tiles[8] == @opponent_symbol && tiles[3] == @opponent_symbol
+	# 	# 	return 3
+	# 	# end
+	# end
 
-	def four_by_four_strategic_move
-		if @board.move_count == 0 || @board.move_count == 1
-			move = @board.corner_tile_numbers.sample
-			until @board.tiles[move-1] == "-"
-				move = @board.corner_tile_numbers.sample
-			end
-			return move
-		end
-	end
+	# def four_by_four_strategic_move
+	# 	if @board.move_count == 0 || @board.move_count == 1
+	# 		move = @board.corner_tile_numbers.sample
+	# 		until @board.tiles[move-1] == "-"
+	# 			move = @board.corner_tile_numbers.sample
+	# 		end
+	# 		return move
+	# 	end
+	# end
 
-	def big_board_strategic_move
-		if @board.move_count == 0 || @board.move_count == 1
-			center_tiles = @board.generate_center_tile_numbers
-			move = center_tiles.sample
-			until @board.tiles[move-1] == "-"
-				move = center_tiles.sample
-			end
-			return move
-		end
-	end
+	# def big_board_strategic_move
+	# 	if @board.move_count == 0 || @board.move_count == 1
+	# 		center_tiles = @board.generate_center_tile_numbers
+	# 		move = center_tiles.sample
+	# 		until @board.tiles[move-1] == "-"
+	# 			move = center_tiles.sample
+	# 		end
+	# 		return move
+	# 	end
+	# end
 
 	def hopeful_move
 		best_o_count = 0
