@@ -11,17 +11,15 @@ class ComputerPlayer
 		@symbol == @board.symbol1 ? @opponent_symbol = @board.symbol2 : @opponent_symbol = @board.symbol1
 	end
 
-	def move
-		move = try_to_win ||
-					 try_to_block ||
-					 # strategic_move ||
-					 try_to_setup_win_on_next_move ||
-					 try_to_block_move_that_leads_to_loss ||
-					 hopeful_move ||
-					 center_move ||
-					 random_move
-
-		@board.update_tile(move, @symbol)
+	def get_move
+		try_to_win ||
+		try_to_block ||
+		# strategic_move ||
+		try_to_setup_win_on_next_move ||
+		try_to_block_move_that_leads_to_loss ||
+		hopeful_move ||
+		center_move ||
+		random_move
 	end
 
 	def try_to_win
