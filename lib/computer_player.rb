@@ -18,7 +18,7 @@ class ComputerPlayer
 		check_safety(try_to_setup_win_on_next_move) ||
 		check_safety(try_to_block_move_that_leads_to_loss) ||
 		check_safety(hopeful_move) ||
-		center_move ||
+		check_safety(center_move) ||
 		safe_move ||
 		random_move
 	end
@@ -112,8 +112,8 @@ class ComputerPlayer
 		return true
 	end
 
-	def check_safety(move_call)
-		move = move_call
+	def check_safety(move_type)
+		move = move_type
 		return move if is_move_safe?(move)
 		return nil
 	end
