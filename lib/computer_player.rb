@@ -15,7 +15,7 @@ class ComputerPlayer
 		try_to_win ||
 		try_to_block ||
 		# strategic_move ||
-		try_to_setup_win_on_next_move if is_move_safe?(try_to_setup_win_on_next_move) ||
+		try_to_setup_win_on_next_move if is_move_safe?(try_to_setup_win_on_next_move) == true ||
 		try_to_block_move_that_leads_to_loss ||
 		hopeful_move ||
 		center_move ||
