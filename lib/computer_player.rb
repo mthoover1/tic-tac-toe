@@ -15,7 +15,7 @@ class ComputerPlayer
 		try_to_win ||
 		try_to_block ||
 		# strategic_move ||
-		try_to_setup_win_on_next_move if is_move_safe?(try_to_setup_win_on_next_move) && try_to_setup_win_on_next_move != nil ||
+		try_to_setup_win_on_next_move if is_move_safe?(try_to_setup_win_on_next_move) ||
 		try_to_block_move_that_leads_to_loss ||
 		hopeful_move ||
 		center_move ||
@@ -97,6 +97,7 @@ class ComputerPlayer
 	end
 
 	def is_move_safe?(tile_number)
+		return false if tile_number == nil
 		return false if look_for_opening(@opponent_symbol) && look_for_opening(@opponent_symbol) != tile_number
 
 		test_tiles = @board.tiles.dup
