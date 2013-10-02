@@ -14,7 +14,7 @@ class ComputerPlayer
 	def move
 		move = try_to_win ||
 					 try_to_block ||
-					 strategic_move ||
+					 # strategic_move ||
 					 try_to_setup_win_on_next_move ||
 					 try_to_block_move_that_leads_to_loss ||
 					 hopeful_move ||
@@ -58,48 +58,48 @@ class ComputerPlayer
 		best_nearby_count = 0
 
 		@board.tiles.chars.each_with_index do |tile, tile_location|
-			test_tiles = @board.tiles.dup
+			next if tile != "-"
 
-			if tile == "-"
-				win_chance_count = 0
-				nearby_count = 0
+			win_chance_count = calculate_number_of_win_chances(target_symbol, tile_location)
+			nearby_count = calculate_number_of_nearby(win_chance_count, best_win_chance_count, tile_location, target_symbol, other_symbol)
 
-				test_tiles[tile_location] = target_symbol
-
-				@board.winning_possibilities.each do |combo|
-					possibility = build_possibility(combo, test_tiles)
-
-					win_chance_count += 1 if one_move_away?(possibility, target_symbol)
-				end
-
-				test_tiles[tile_location] = "-"
-
-				if win_chance_count >= best_win_chance_count
-					@board.winning_possibilities.each do |combo|
-						if combo.include?(tile_location)
-							possibility = build_possibility(combo, test_tiles)
-
-							nearby_count += 1 if possibility.include?(other_symbol) && !possibility.include?(target_symbol)
-						end
-					end
-				end
-
-				if win_chance_count >= 2 && nearby_count >= best_nearby_count
-					best_win_chance_count = win_chance_count
-					best_nearby_count = nearby_count
-					best_tile_location = tile_location
-				end
+			if win_chance_count >= 2 && nearby_count >= best_nearby_count
+				best_win_chance_count = win_chance_count
+				best_nearby_count = nearby_count
+				best_tile_location = tile_location
 			end
 		end
-		return (best_tile_location+1) if best_win_chance_count >= 2
+		return (best_tile_location + 1) if best_win_chance_count >= 2
+	end
+
+	def calculate_number_of_win_chances(target_symbol, tile_location)
+		win_chance_count = 0
+		test_tiles = @board.tiles.dup
+		test_tiles[tile_location] = target_symbol
+
+		@board.winning_possibilities.each do |combo|
+			possibility = build_possibility(combo, test_tiles)
+			win_chance_count += 1 if one_move_away?(possibility, target_symbol)
+		end
+
+		win_chance_count
+	end
+
+	def calculate_number_of_nearby(win_chance_count, best_win_chance_count, tile_location, target_symbol, other_symbol)
+		return 0 if win_chance_count < best_win_chance_count
+
+		nearby_count = 0
+
+		@board.winning_possibilities.select{|combo| combo.include?(tile_location)}.each do |combo|
+			possibility = build_possibility(combo, @board.tiles)
+			nearby_count += 1 if possibility.include?(other_symbol) && !possibility.include?(target_symbol)
+		end
+
+		nearby_count
 	end
 
 	def build_possibility(combo, tiles)
-		possibility = []
-		combo.each do |location|
-			possibility << tiles[location]
-		end
-		possibility
+		combo.map{|location| tiles[location]}
 	end
 
 	def one_move_away?(possibility, letter)
