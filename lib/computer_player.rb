@@ -15,10 +15,11 @@ class ComputerPlayer
 		try_to_win ||
 		try_to_block ||
 		# strategic_move ||
-		(try_to_setup_win_on_next_move if is_move_safe?(try_to_setup_win_on_next_move)) == true ||
-		try_to_block_move_that_leads_to_loss ||
-		hopeful_move ||
+		check_safety(try_to_setup_win_on_next_move) ||
+		check_safety(try_to_block_move_that_leads_to_loss) ||
+		check_safety(hopeful_move) ||
 		center_move ||
+		safe_move ||
 		random_move
 	end
 
@@ -109,6 +110,12 @@ class ComputerPlayer
 		return false if next_opponent_tile_number == next_computer_tile_number && next_opponent_tile_number != nil
 
 		return true
+	end
+
+	def check_safety(move_call)
+		move = move_call
+		return move if is_move_safe?(move)
+		return nil
 	end
 
 	def build_possibility(combo, tiles)
@@ -269,6 +276,13 @@ class ComputerPlayer
 		if @board.size.odd?
 			center = (@board.size / 2 * @board.size) + (@board.size / 2 + 1)
 			return center if @board.tile_open?(center)
+		end
+	end
+
+	def safe_move
+		@board.tiles.chars.each_with_index do |tile, i|
+			next if tile != "-"
+			return (i + 1) if is_move_safe?(i + 1)
 		end
 	end
 
