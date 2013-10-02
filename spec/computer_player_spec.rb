@@ -53,44 +53,38 @@ describe ComputerPlayer do
     make_moves(board, ["XXO",
                        "X--",
                        "O--"]) #win
-    board.should_receive(:update_tile).with(5, "O")
-    computer.move
+    computer.get_move.should eq(5)
     board = Board.new(3)
     computer = ComputerPlayer.new(board)
     make_moves(board, ["-X-",
                        "-XO",
                        "---"]) #block
-    board.should_receive(:update_tile).with(8, "O")
-    computer.move
+    computer.get_move.should eq(8)
     board = Board.new(3)
     computer = ComputerPlayer.new(board)
     make_moves(board, ["X--",
                        "-O-",
                        "---"]) #strategic
-    board.should_receive(:update_tile).with(9, "O")
-    computer.move
+    computer.get_move.should eq(9)
     board = Board.new(3)
     computer = ComputerPlayer.new(board)
     make_moves(board, ["X--",
                        "-OX",
                        "-XO"]) #hopeful
-    computer.move
-    ["X-O-OX-XO","X---OXOXO"].should include(board.tiles)
+    [3,7].should include(computer.get_move)
     board = Board.new(3)
     computer = ComputerPlayer.new(board)
     make_moves(board, ["---",
                        "---",
                        "---"]) #center
-    board.should_receive(:update_tile).with(5, "O")
-    computer.move
+    computer.get_move.should eq(5)
     big_board = Board.new(4)                      #future block on 4x4
     big_computer = ComputerPlayer.new(big_board)
     make_moves(big_board, ["--XX",
                            "----",
                            "X---",
                            "XOOO"])
-    big_board.should_receive(:update_tile).with(1, "O")
-    big_computer.move
+    big_computer.get_move.should eq(1)
   end
 
 
