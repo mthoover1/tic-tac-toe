@@ -130,7 +130,7 @@ class ComputerPlayer
 		best_combo = []
 		best_combo_index = 0
 
-		@board.winning_possibilities.shuffle.each do |combo|  # PUT symbol IN A POSSIBLE WINNING ROW
+		@board.winning_possibilities.shuffle.each do |combo|
 			combo = combo.reverse if [0,1].sample == 1
 			possibility = build_possibility(combo, @board.tiles)
 

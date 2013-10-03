@@ -92,15 +92,12 @@ describe ComputerPlayer do
                   "-O-",
                   "-X-"], [9]]
               ]
-      40.times do
 
       tests.each_with_index do |test, i|
         board = Board.new(3)
         computer = ComputerPlayer.new(board)
         make_moves(board, test[0])
         test[1].should include(computer.get_move), "Test ##{i+1}: #{test[0]} should = #{test[1]}"
-      end
-
       end
     end
 
