@@ -1,14 +1,16 @@
 class Board
-  attr_accessor :tiles, :move_count, :last_player, :size, :winning_possibilities, :corner_tile_numbers, :win_length, :symbol1, :symbol2
+  attr_accessor :tiles, :move_count, :last_player, :size, :winning_possibilities, :corner_tile_numbers, :win_length, :symbol1, :symbol2, :blank
 
   SYMBOL1 = "X"
   SYMBOL2 = "O"
+  BLANK = "-"
 
-  def initialize(size, symbol1 = SYMBOL1, symbol2 = SYMBOL2)
+  def initialize(size, symbol1 = SYMBOL1, symbol2 = SYMBOL2, blank = BLANK)
     @size = size
-    @tiles = generate_blank_tiles(size)
     @symbol1 = symbol1
     @symbol2 = symbol2
+    @blank = blank
+    @tiles = generate_blank_tiles(size)
     @win_length = generate_win_length(size)
     @last_player = ""
     @move_count = 0
@@ -17,7 +19,7 @@ class Board
   end
 
   def generate_blank_tiles(size)
-    "-"*(size**2)
+    @blank*(size**2)
   end
 
   def generate_win_length(size)
@@ -108,18 +110,18 @@ class Board
   def to_s
     formatted = tiles.split("").join(" ")
 
-    index = @size*2 - 1
+    new_line_index = (@size * 2) - 1
 
     size.times do
-      formatted[index] = "\n"
-      index += @size*2
+      formatted[new_line_index] = "\n"
+      new_line_index += @size * 2
     end
 
     formatted << "\n"
   end
 
   def tile_open?(tile_number)
-    tiles[tile_number - 1] == "-" if tile_number >= 1
+    tiles[tile_number - 1] == @blank if tile_number >= 1
   end
 
   def update_tile(tile_number, player)
@@ -138,34 +140,21 @@ class Board
 
   def future_cats_game?
     @winning_possibilities.each do |combo|
-      possibility = []
-
-      combo.each do |location|
-        possibility << tiles[location]
-      end
-
-      return false if possibility.include?("-") && [1,2].include?(possibility.uniq.length)
+      possibility = combo.map {|location| tiles[location]}
+      return false if possibility.include?(@blank) && possibility.uniq.length <= 2
     end
     true
   end
 
   def full?
-    !tiles.include?("-")
+    !tiles.include?(@blank)
   end
 
   def won?
     @winning_possibilities.each do |combo|
-      if !["-"].include?(tiles[combo[0]])
-        possibility = []
-
-        combo.each do |location|
-          possibility << tiles[location]
-        end
-
-        if possibility.uniq.length == 1
-          return true
-        end
-      end
+      next if tiles[combo[0]] == @blank
+      possibility = combo.map {|location| tiles[location]}
+      return true if possibility.uniq.length == 1
     end
     false
   end
