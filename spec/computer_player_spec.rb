@@ -92,7 +92,7 @@ describe ComputerPlayer do
   context "Strategic Moves:" do
     it "should make strategic move for 3x3, human first, 1 move, center open" do
       board.stub(tiles: "-X-------", move_count: 1)
-      computer.strategic_move.should == 5
+      computer.get_move.should == 5
     end
 
     it "should make strategic moves for 3x3, human first, 3 moves" do
@@ -133,40 +133,42 @@ describe ComputerPlayer do
         board = Board.new(3)
         computer = ComputerPlayer.new(board)
         make_moves(board, test[0])
-        test[1].should include(computer.strategic_move), "Test ##{i+1}: #{test[0]} should = #{test[1]}"
+        test[1].should include(computer.get_move), "Test ##{i+1}: #{test[0]} should = #{test[1]}"
       end
     end
 
     it "should make strategic moves for 3x3, computer first, 2 moves" do
-      tests = [ [["-X-",
+      tests = [
+                [["-X-",
                   "-O-",
-                  "---"], [7,9]],
+                  "---"], [1,3,4,6,7,9]],
                 [["---",
                   "XO-",
-                  "---"], [3,9]],
+                  "---"], [1,2,3,7,8,9]],
                 [["---",
                   "-OX",
-                  "---"], [1,7]],
+                  "---"], [1,2,3,7,8,9]],
                 [["---",
                   "-O-",
-                  "-X-"], [1,3]],
-                [["X--",
-                  "-O-",
-                  "---"], [9]],
-                [["--X",
-                  "-O-",
-                  "---"], [7]],
-                [["---",
-                  "-O-",
-                  "X--"], [3]],
-                [["---",
-                  "-O-",
-                  "--X"], [1]]  ]
+                  "-X-"], [1,3,4,6,7,9]],
+                # [["X--",
+                #   "-O-",
+                #   "---"], [9]],
+                # [["--X",
+                #   "-O-",
+                #   "---"], [7]],
+                # [["---",
+                #   "-O-",
+                #   "X--"], [3]],
+                # [["---",
+                #   "-O-",
+                #   "--X"], [1]]
+              ]
       tests.each do |test|
         board = Board.new(3)
         computer = ComputerPlayer.new(board)
         make_moves(board, test[0])
-        test[1].should include(computer.strategic_move)
+        test[1].should include(computer.get_move)
       end
     end
 
@@ -199,32 +201,29 @@ describe ComputerPlayer do
         board = Board.new(3)
         computer = ComputerPlayer.new(board)
         make_moves(board, test[0])
-        computer.strategic_move.should == test[1]
+        computer.get_move.should == test[1]
       end
     end
 
     it "should make strategic move for 4x4, first computer move, even sized board" do
       board = Board.new(4)
       computer = ComputerPlayer.new(board)
-      board.corner_tile_numbers.should include(computer.strategic_move)
+      board.corner_tile_numbers.should include(computer.get_move)
       make_moves(board, ["X---",
                          "----",
                          "----",
                          "----"])
-      board.corner_tile_numbers.should include(computer.strategic_move)
+      [7,10].should include (computer.get_move)
       board.tiles[0].should == "X"
-    end
 
-    it "should make a strategic_move for big boards, first computer move, even sized board" do
-      board = Board.new(6)
+      board = Board.new(4)
       computer = ComputerPlayer.new(board)
-      make_moves(board, ["------",
-                         "------",
-                         "------",
-                         "--X---",
-                         "------",
-                         "------"])
-      [15,16,22].should include(computer.strategic_move)
+      make_moves(board, ["----",
+                         "----",
+                         "----",
+                         "X---"])
+      [6,11].should include (computer.get_move)
+      board.tiles[12].should == "X"
     end
   end
 
@@ -277,12 +276,12 @@ describe ComputerPlayer do
   it "should take a corner on the first move on a board bigger than 3x3" do
     board = Board.new(4)
     computer = ComputerPlayer.new(board)
-    [1,4,13,16].should include(computer.strategic_move)
+    [1,4,13,16].should include(computer.get_move)
     make_moves(board, ["---X",
                        "----",
                        "----",
                        "----"])
-    [1,13,16].should include(computer.strategic_move)
+    [1,13,16].should include(computer.get_move)
   end
 
   it "should prevent a move that sets up a human win scenario" do
