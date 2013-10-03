@@ -49,45 +49,6 @@ describe ComputerPlayer do
     computer.look_for_opening("O").should == 6
   end
 
-  xit "should cycle through different move types" do
-    make_moves(board, ["XXO",
-                       "X--",
-                       "O--"]) #win
-    computer.get_move.should eq(5)
-    board = Board.new(3)
-    computer = ComputerPlayer.new(board)
-    make_moves(board, ["-X-",
-                       "-XO",
-                       "---"]) #block
-    computer.get_move.should eq(8)
-    board = Board.new(3)
-    computer = ComputerPlayer.new(board)
-    make_moves(board, ["X--",
-                       "-O-",
-                       "---"]) #strategic
-    computer.get_move.should eq(9)
-    board = Board.new(3)
-    computer = ComputerPlayer.new(board)
-    make_moves(board, ["X--",
-                       "-OX",
-                       "-XO"]) #hopeful
-    [3,7].should include(computer.get_move)
-    board = Board.new(3)
-    computer = ComputerPlayer.new(board)
-    make_moves(board, ["---",
-                       "---",
-                       "---"]) #center
-    computer.get_move.should eq(5)
-    big_board = Board.new(4)                      #future block on 4x4
-    big_computer = ComputerPlayer.new(big_board)
-    make_moves(big_board, ["--XX",
-                           "----",
-                           "X---",
-                           "XOOO"])
-    big_computer.get_move.should eq(1)
-  end
-
-
 
   context "Strategic Moves:" do
     it "should make strategic move for 3x3, human first, 1 move, center open" do
@@ -96,7 +57,8 @@ describe ComputerPlayer do
     end
 
     it "should make strategic moves for 3x3, human first, 3 moves" do
-      tests = [ [["O--",
+      tests = [
+                [["O--",
                   "-X-",
                   "--X"], [3,7]],
                 [["X--",
@@ -128,12 +90,17 @@ describe ComputerPlayer do
                   "-X-"], [7]],
                 [["--X",
                   "-O-",
-                  "-X-"], [9]]  ]
+                  "-X-"], [9]]
+              ]
+      40.times do
+
       tests.each_with_index do |test, i|
         board = Board.new(3)
         computer = ComputerPlayer.new(board)
         make_moves(board, test[0])
         test[1].should include(computer.get_move), "Test ##{i+1}: #{test[0]} should = #{test[1]}"
+      end
+
       end
     end
 
@@ -273,17 +240,6 @@ describe ComputerPlayer do
     # computer.center_move.should == 25
   end
 
-  it "should take a corner on the first move on a board bigger than 3x3" do
-    board = Board.new(4)
-    computer = ComputerPlayer.new(board)
-    [1,4,13,16].should include(computer.get_move)
-    make_moves(board, ["---X",
-                       "----",
-                       "----",
-                       "----"])
-    [1,13,16].should include(computer.get_move)
-  end
-
   it "should prevent a move that sets up a human win scenario" do
     board = Board.new(4)
     computer = ComputerPlayer.new(board)
@@ -303,13 +259,6 @@ describe ComputerPlayer do
                        "OO--"])
     computer.try_to_setup_win_on_next_move.should == 16
   end
-
-  # it "should make a move that allows another move that sets up two winning scenarios" do
-  #   board = Board.new(6)
-  #   computer = ComputerPlayer.new(board)
-  #   board.stub(tiles: "--------------O-----XO------X-------", move_count: 4)
-  #   computer.try_to_future_future_win.should == 16
-  # end
 
   it "should build a possibility when given a winning-combo and tiles" do
     make_moves(board, ["X--",

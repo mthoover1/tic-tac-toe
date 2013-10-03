@@ -11,7 +11,7 @@ class ComputerPlayer
 		@symbol == @board.symbol1 ? @opponent_symbol = @board.symbol2 : @opponent_symbol = @board.symbol1
 	end
 
-	def get_move  #move check_safety into individual methods
+	def get_move
 		try_to_win ||
 		try_to_block ||
 		check_safety(try_to_setup_win_on_next_move) ||
@@ -177,13 +177,13 @@ class ComputerPlayer
 				possible_win_count += 1 if !possibility.include?(@opponent_symbol)
 			end
 
-			if possible_win_count >= best_possible_win_count
+			if possible_win_count >= best_possible_win_count && is_move_safe?(i + 1)
 				best_possible_win_count = possible_win_count
 				best_tile_location = i
 			end
 		end
 
-		return (best_tile_location + 1) if is_move_safe?(best_tile_location + 1)
+		return (best_tile_location + 1)
 	end
 
 	def random_move
