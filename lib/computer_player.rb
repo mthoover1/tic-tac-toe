@@ -35,7 +35,7 @@ class ComputerPlayer
 			possibility = build_possibility(combo, tiles)
 
 			if one_move_away?(possibility, letter)
-				combo_index = possibility.index("-")
+				combo_index = possibility.index(@board.blank)
 				return combo[combo_index] + 1
 			end
 		end
@@ -56,7 +56,7 @@ class ComputerPlayer
 		best_nearby_count = 0
 
 		tiles.chars.each_with_index do |tile, tile_location|
-			next if tile != "-"
+			next if tile != @board.blank
 
 			win_chance_count = calculate_number_of_win_chances(target_symbol, tile_location, tiles)
 			nearby_count = calculate_number_of_nearby(win_chance_count, best_win_chance_count, tile_location, target_symbol, other_symbol, tiles)
@@ -122,11 +122,11 @@ class ComputerPlayer
 	end
 
 	def one_move_away?(possibility, letter)
-		possibility.count("-") == 1 && possibility.include?(letter) && possibility.uniq.length == 2
+		possibility.count(@board.blank) == 1 && possibility.include?(letter) && possibility.uniq.length == 2
 	end
 
 	def hopeful_move
-		best_o_count = 0
+		best_opponent_count = 0
 		best_combo = []
 		best_combo_index = 0
 
@@ -134,27 +134,27 @@ class ComputerPlayer
 			combo = combo.reverse if [0,1].sample == 1
 			possibility = build_possibility(combo, @board.tiles)
 
-			if possibility.include?(symbol) && possibility.include?("-") && !possibility.include?(@opponent_symbol)
-				o_count = possibility.count(symbol)
+			if possibility.include?(symbol) && possibility.include?(@board.blank) && !possibility.include?(@opponent_symbol)
+				opponent_count = possibility.count(symbol)
 
-				if o_count > best_o_count
-					best_o_count = o_count
+				if opponent_count > best_opponent_count
+					best_opponent_count = opponent_count
 					best_combo = combo
 
 					o_index = possibility.index(symbol)
 
-					if possibility[o_index+1] == "-"
+					if possibility[o_index+1] == @board.blank
 						best_combo_index = o_index+1
-					elsif possibility[o_index-1] == "-" && o_index > 0
+					elsif possibility[o_index-1] == @board.blank && o_index > 0
 						best_combo_index = o_index-1
-					elsif possibility[o_index+2] == "-"
+					elsif possibility[o_index+2] == @board.blank
 						best_combo_index = o_index+2
 					end
 				end
 			end
 		end
 
-		return best_combo[best_combo_index] + 1 if best_o_count > 0
+		return best_combo[best_combo_index] + 1 if best_opponent_count > 0
 	end
 
 	def center_move
@@ -169,7 +169,7 @@ class ComputerPlayer
 		best_tile_location = nil
 
 		@board.tiles.chars.each_with_index do |tile, i|
-			next if tile != "-"
+			next if tile != @board.blank
 			possible_win_count = 0
 
 			@board.winning_possibilities.select{|combo| combo.include?(i)}.each do |combo|
