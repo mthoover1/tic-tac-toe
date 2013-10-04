@@ -152,8 +152,8 @@ class Board
 
   def won?
     @winning_possibilities.each do |combo|
-      next if tiles[combo[0]] == @blank
       possibility = combo.map {|location| tiles[location]}
+      next if possibility.include?(@blank)
       return true if possibility.uniq.length == 1
     end
     false

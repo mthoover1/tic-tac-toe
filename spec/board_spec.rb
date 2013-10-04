@@ -77,7 +77,6 @@ describe Board do
                        "-X-",
                        "OX-"])
     board.won?.should == true
-
   end
 
   it "should know when there is not a winner" do
